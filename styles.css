@@ -1,0 +1,299 @@
+.logo {
+  max-height: 50px;
+}
+
+/* Color Theme */
+:root {
+  --primary-bg: #f8f4e9;
+  /* Light Beige */
+  --primary-text: #8d844d;
+  /* Olive Green */
+  --accent: #e1ad37;
+  /* Mustard Yellow */
+  --secondary-bg: #94bdb5;
+  /* Soft Teal */
+}
+
+/* navbar style */
+.navbar.bg-light {
+  background-color: #f8f4e9 !important;
+}
+
+.navbar-nav {
+  margin: 0 auto;
+}
+
+.navbar-nav .nav-link {
+  position: relative;
+  text-decoration: none;
+  font-family: 'Montserrat';
+  font-weight: bold;
+}
+
+.navbar-nav .nav-link::after {
+  content: "";
+  display: block;
+  height: 2px;
+  width: 0;
+  background-color: var(--accent);
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  transition: width 0.3s;
+  font-family: 'Montserrat';
+  font-weight: bold;
+}
+
+.navbar-nav .nav-link:hover::after {
+  width: 100%;
+}
+
+.navbar-toggler {
+  border: none;
+  outline: none;
+}
+
+.navbar-toggler[aria-expanded="true"] .navbar-toggler-icon {
+  width: 80%;
+  /* Adjust the width of the accent line when navbar is expanded */
+}
+
+.navbar-brand {
+  margin: 0 auto;
+  /* Center the logo */
+}
+
+.navbar-nav .nav-item .nav-link.text-dark:hover,
+.card-title.text-dark:hover {
+  transition: color 0.3s;
+}
+
+
+
+/* Default styles for #banner */
+#banner {
+  background-image: url('logo_and_banner/banner_etsy.jpg');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  color: #fff;
+  text-align: center;
+  padding: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  animation: fadeInAndMove 4s forwards;
+}
+
+/* Adjust styles for smaller screens (tablets) */
+@media (max-width: 768px) {
+  #banner {
+    height: 80vh;
+    font-size: 20px;
+    /* Adjust font size */
+  }
+}
+
+/* Adjust styles for even smaller screens (mobile phones) */
+@media (max-width: 576px) {
+  #banner {
+    height: 60vh;
+    font-size: 16px;
+    /* Adjust font size */
+  }
+}
+
+
+@keyframes fadeInAndMove {
+  0% {
+    opacity: 0;
+    background-position: center;
+    /* Start at center */
+  }
+
+  100% {
+    opacity: 1;
+    background-position: 50% 50%;
+    /* Move to final position */
+  }
+}
+
+
+#shopping {
+  background-color: #fff;
+}
+
+#about {
+  background-color: var(--secondary-bg);
+}
+
+.aboutme {
+  color: #fff;
+}
+
+.about-content {
+  color: #fff;
+  font-style: italic;
+}
+
+.contact-links {
+  text-align: center;
+  font-size: 14px;
+
+}
+
+.contact-links p {
+  display: inline-block;
+  margin: 0 20px;
+  /* Adjust the margin as needed */
+  font-size: 20px;
+  font-family: 'Adobe Garamond', serif;
+  font-style: italic;
+}
+
+
+/* body style */
+body {
+  padding-top: 80px;
+  /* Adjust the value based on the height of your navbar */
+  font-family: 'Adobe Garamond', serif;
+  font-weight: bold;
+  background-color: var(--primary-bg);
+  color: var(--primary-text);
+
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+
+}
+
+/* Montserrat Bold for Headings */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Montserrat';
+  font-weight: bold;
+}
+
+/* Example usage of colors */
+a {
+  color: var(--primary-text);
+  text-decoration: none;
+  /* Removes underline */
+  /* Mustard Yellow */
+}
+
+a:hover {
+  color: var(--accent);
+  /* Mustard Yellow */
+}
+
+/* Default font size for paragraphs */
+p {
+  font-size: 24px;
+}
+
+/* Adjust font size for smaller screens (tablets) */
+@media (max-width: 768px) {
+  p {
+    font-size: 18px;
+    /* Adjust the font size for smaller screens (tablets) */
+  }
+}
+
+/* Adjust font size for smaller screens (mobile phones) */
+@media (max-width: 576px) {
+  p {
+    font-size: 14px;
+    /* Adjust the font size for smaller screens (mobile phones) */
+  }
+}
+
+
+p img {
+  vertical-align: middle;
+  /* Aligns the image with the text */
+  margin-right: 5px;
+  /* Adds some space between the icon and text */
+  width: 20px;
+  /* Adjust the width as needed */
+  height: 20px;
+  /* Adjust the height as needed */
+}
+
+
+.btn {
+  cursor: pointer;
+}
+
+.btn-primary {
+  background-color: var(--accent);
+  /* Mustard Yellow */
+  color: var(--primary-bg);
+  /* Light Beige */
+  border-color: var(--accent);
+  /* Dark Brown */
+  transition: background-color 0.3s, color 0.3s;
+  /* Added transition property */
+  font-weight: bold;
+  font-style: italic;
+}
+
+.btn-primary:hover {
+  background-color: var(--secondary-bg);
+  /* Light Beige */
+  border-color: var(--secondary-bg);
+  /* Dark Brown */
+  color: #fff;
+  /* Olive Green */
+  transition: background-color 0.3s, color 0.3s;
+  /* Added transition property */
+  font-weight: bold;
+  font-style: italic;
+}
+
+.btn-secondary {
+  background-color: var(--secondary-bg);
+  /* Soft Teal */
+  color: var(--primary-text);
+  /* Olive Green */
+}
+
+.btn-secondary:hover {
+  background-color: var(--accent);
+  /* Mustard Yellow */
+  color: var(--primary-bg);
+  /* Light Beige */
+}
+
+/* Card Hover Effect */
+.card {
+  border: 4px solid transparent;
+  position: relative;
+}
+
+.card:hover {
+  border-color: var(--secondary-bg);
+  transition: border-color 0.3s;
+}
+
+.card-title {
+  font-size: 1rem;
+  /* Adjust the font size as needed */
+  font-weight: bold;
+  /* Optionally adjust the font weight */
+}
+
+.copy-right-text {
+  font-size: 14px;
+}
