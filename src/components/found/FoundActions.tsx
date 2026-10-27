@@ -29,6 +29,7 @@ export function FoundActions({ slug, text, reference, translation }: Props) {
           storyUrl={`/found/${slug}/card?format=story`}
           filename={`manna-${slug}-story.png`}
           title={`A verse I found: ${reference}`}
+          trackKey={slug}
           onStatus={flash}
         />
         <button type="button" className="btn" onClick={copy}>Copy</button>

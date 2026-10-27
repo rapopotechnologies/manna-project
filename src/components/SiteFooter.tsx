@@ -21,7 +21,7 @@ export function SiteFooter() {
 
         <div className="footer-cols">
           <div>
-            <p className="label">Say hello</p>
+            <p className="label"><Link href="/contact">Say hello</Link></p>
             <p className="footer-email">
               <span className="selectable">{CONTACT_EMAIL}</span>
               <CopyButton text={CONTACT_EMAIL} label="Copy email" className="btn btn-small btn-ghost" />
@@ -32,12 +32,15 @@ export function SiteFooter() {
             <a href={ETSY_SHOP_URL} target="_blank" rel="noopener noreferrer">
               Manna Project on Etsy ↗
             </a>
+            <Link href="/support">Support Manna Project</Link>
           </div>
           <div>
             <p className="label">Every day</p>
             <ul className="footer-links">
               <li><Link href="/daily">Today’s verse</Link></li>
               <li><Link href="/kids">Manna Kids question</Link></li>
+              <li><Link href="/my-manna">My manna jar</Link></li>
+              <li><Link href="/contact">Contact & FAQ</Link></li>
             </ul>
           </div>
         </div>

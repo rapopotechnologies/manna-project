@@ -62,6 +62,7 @@ export function KidsActions({ question, dayKey }: Props) {
           storyUrl={`/kids/card?format=story&d=${dayKey}`}
           filename={`manna-kids-${dayKey}-story.png`}
           title="Today’s Manna Kids question"
+          trackKey="kids"
           onStatus={flash}
         />
         <button type="button" className="btn" onClick={copy}>Copy</button>

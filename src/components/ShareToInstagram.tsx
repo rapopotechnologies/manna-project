@@ -1,12 +1,15 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { track } from "@/lib/track";
 
 type Props = {
   /** Story-sized image to share, e.g. /daily/card?format=story&d=2026-10-27 */
   storyUrl: string;
   filename: string;
   title: string;
+  /** What is being shared, for the admin counts: "daily", "kids" or a verse slug. */
+  trackKey: string;
   onStatus: (message: string) => void;
 };
 
@@ -18,7 +21,7 @@ type Mode = "share" | "download";
  * to Instagram directly; the share sheet is the supported path.
  * On computers and older phones it downloads the image instead.
  */
-export function ShareToInstagram({ storyUrl, filename, title, onStatus }: Props) {
+export function ShareToInstagram({ storyUrl, filename, title, trackKey, onStatus }: Props) {
   const file = useRef<File | null>(null);
   const [mode, setMode] = useState<Mode>("download");
 
@@ -51,6 +54,7 @@ export function ShareToInstagram({ storyUrl, filename, title, onStatus }: Props)
     if (!file.current) return;
     try {
       await navigator.share({ files: [file.current], title });
+      track("ig_share", trackKey);
     } catch (err) {
       if ((err as DOMException)?.name !== "AbortError") {
         onStatus("Couldn’t open sharing. Use Save image, then post it from Instagram.");
@@ -72,7 +76,10 @@ export function ShareToInstagram({ storyUrl, filename, title, onStatus }: Props)
       className="btn btn-instagram"
       href={storyUrl}
       download={filename}
-      onClick={() => onStatus("Story image saved. Open Instagram on your phone and add it to your story.")}
+      onClick={() => {
+        track("ig_share", trackKey);
+        onStatus("Story image saved. Open Instagram on your phone and add it to your story.");
+      }}
     >
       <InstagramGlyph />
       Instagram story image

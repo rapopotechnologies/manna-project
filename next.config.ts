@@ -8,6 +8,8 @@ const nextConfig: NextConfig = {
   images: {
     formats: ["image/avif", "image/webp"],
     minimumCacheTTL: 60 * 60 * 24 * 30,
+    // Photos uploaded through the admin live in Supabase storage.
+    remotePatterns: [new URL("https://duucrnfjegoqbmkmtfoa.supabase.co/storage/v1/object/public/site-images/**")],
   },
 
   // Old addresses from the original static site. These may be printed on

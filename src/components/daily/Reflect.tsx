@@ -1,6 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
+import { plantReflection } from "@/lib/progress";
 
 const steps = [
   { key: "s", letter: "S", name: "Scripture", hint: "Write out the phrase that stood out to you." },
@@ -18,6 +20,7 @@ const storageKey = (dayKey: string) => `manna:soap:${dayKey}`;
 export function Reflect({ dayKey }: { dayKey: string }) {
   const [notes, setNotes] = useState<Notes>(empty);
   const [saved, setSaved] = useState(false);
+  const [planted, setPlanted] = useState(false);
 
   useEffect(() => {
     try {
@@ -38,6 +41,7 @@ export function Reflect({ dayKey }: { dayKey: string }) {
     } catch {
       setSaved(false);
     }
+    if (steps.every((s) => next[s.key].trim()) && plantReflection(dayKey)) setPlanted(true);
   }
 
   return (
@@ -63,6 +67,16 @@ export function Reflect({ dayKey }: { dayKey: string }) {
         ))}
       </div>
       <p className="reflect-note">{saved ? "Saved on this device." : "Your notes stay on this device. Nothing is sent anywhere."}</p>
+      {planted && (
+        <p className="reflect-planted hand">
+          A flower was planted in <Link href="/my-manna">your garden</Link>.
+        </p>
+      )}
+      {steps.every((s) => notes[s.key].trim()) && (
+        <p className="reflect-support">
+          Manna Project is free, kept going by readers like you. <Link href="/support">Support it →</Link>
+        </p>
+      )}
     </details>
   );
 }

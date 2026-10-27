@@ -1,8 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Bricolage_Grotesque, Caveat, Literata, Montserrat } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
-import { SiteHeader } from "@/components/SiteHeader";
-import { SiteFooter } from "@/components/SiteFooter";
+import { Suspense } from "react";
 import { GoogleAnalytics } from "@/components/GoogleAnalytics";
 import { MOTTO, SITE_NAME, SITE_URL } from "@/lib/site";
 import "./globals.css";
@@ -43,12 +42,11 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <script dangerouslySetInnerHTML={{ __html: daypartScript }} />
       </head>
       <body>
-        <a className="skip-link" href="#main">Skip to content</a>
-        <SiteHeader />
-        <main id="main">{children}</main>
-        <SiteFooter />
+        {children}
         <Analytics />
-        <GoogleAnalytics />
+        <Suspense fallback={null}>
+          <GoogleAnalytics />
+        </Suspense>
       </body>
     </html>
   );
