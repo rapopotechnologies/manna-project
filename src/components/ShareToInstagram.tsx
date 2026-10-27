@@ -3,24 +3,24 @@
 import { useEffect, useRef, useState } from "react";
 
 type Props = {
-  dayKey: string;
-  reference: string;
+  /** Story-sized image to share, e.g. /daily/card?format=story&d=2026-10-27 */
+  storyUrl: string;
+  filename: string;
+  title: string;
   onStatus: (message: string) => void;
 };
 
 type Mode = "share" | "download";
 
 /**
- * Opens the phone's share sheet with a story-sized image of today's verse, so
+ * Opens the phone's share sheet with a story-sized image, so
  * Instagram (Stories, Feed or Direct) shows up as a target. Websites can't post
  * to Instagram directly; the share sheet is the supported path.
  * On computers and older phones it downloads the image instead.
  */
-export function ShareToInstagram({ dayKey, reference, onStatus }: Props) {
+export function ShareToInstagram({ storyUrl, filename, title, onStatus }: Props) {
   const file = useRef<File | null>(null);
   const [mode, setMode] = useState<Mode>("download");
-  const storyUrl = `/daily/card?format=story&d=${dayKey}`;
-  const filename = `manna-${dayKey}-story.png`;
 
   // Fetch the image ahead of the tap. iOS only allows sharing a file if the
   // share sheet opens right after the tap, with no download in between.
@@ -50,7 +50,7 @@ export function ShareToInstagram({ dayKey, reference, onStatus }: Props) {
   async function share() {
     if (!file.current) return;
     try {
-      await navigator.share({ files: [file.current], title: `Today’s verse: ${reference}` });
+      await navigator.share({ files: [file.current], title });
     } catch (err) {
       if ((err as DOMException)?.name !== "AbortError") {
         onStatus("Couldn’t open sharing. Use Save image, then post it from Instagram.");

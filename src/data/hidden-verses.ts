@@ -102,3 +102,27 @@ export const hiddenVerses: readonly HiddenVerse[] = [
 export function findHiddenVerse(slug: string): HiddenVerse | undefined {
   return hiddenVerses.find((v) => v.slug === slug);
 }
+
+/**
+ * Hidden verses are grouped into collections. "The attic" holds the original ten.
+ * Seasonal sets (Advent, Lent) can be added here, and later from the admin.
+ */
+export type Collection = {
+  id: string;
+  name: string;
+  blurb: string;
+  slugs: string[];
+};
+
+export const collections: readonly Collection[] = [
+  {
+    id: "attic",
+    name: "The attic",
+    blurb: "Ten verses tucked into the walls of Manna Project.",
+    slugs: hiddenVerses.map((v) => v.slug),
+  },
+];
+
+export function collectionFor(slug: string): Collection | undefined {
+  return collections.find((c) => c.slugs.includes(slug));
+}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ShareToInstagram } from "@/components/daily/ShareToInstagram";
+import { ShareToInstagram } from "@/components/ShareToInstagram";
 
 type Props = {
   dayKey: string;
@@ -52,7 +52,12 @@ export function VerseActions({ dayKey, text, reference, version, chapterHref, ca
   return (
     <div className="verse-actions">
       <div className="verse-buttons">
-        <ShareToInstagram dayKey={dayKey} reference={reference} onStatus={flash} />
+        <ShareToInstagram
+          storyUrl={`/daily/card?format=story&d=${dayKey}`}
+          filename={`manna-${dayKey}-story.png`}
+          title={`Today’s verse: ${reference}`}
+          onStatus={flash}
+        />
         <button type="button" className="btn" onClick={share}>Share link</button>
         <button type="button" className="btn" onClick={copy}>Copy</button>
         <a className="btn" href={`${cardHref}?d=${dayKey}`} download={`manna-${dayKey}.png`}>Save image</a>

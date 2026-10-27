@@ -1,33 +1,24 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
+import { addFound } from "@/lib/found-store";
 
-const KEY = "manna:found";
+type Props = { slug: string; slugs: string[]; collectionName: string };
 
-/** "3 of 10 found", remembered on this device. */
-export function FoundTally({ slug, slugs }: { slug: string; slugs: string[] }) {
+/** Marks this verse as found and shows "3 of 10 found", remembered on this device. */
+export function FoundTally({ slug, slugs, collectionName }: Props) {
   const [found, setFound] = useState<string[] | null>(null);
 
   useEffect(() => {
-    let list: string[] = [];
-    try {
-      list = JSON.parse(localStorage.getItem(KEY) ?? "[]");
-      if (!Array.isArray(list)) list = [];
-    } catch {
-      list = [];
-    }
-    if (!list.includes(slug)) list = [...list, slug];
-    try {
-      localStorage.setItem(KEY, JSON.stringify(list));
-    } catch {
-      // Storage unavailable; show this visit only.
-    }
+    const list = addFound(slug);
     // eslint-disable-next-line react-hooks/set-state-in-effect -- reading device storage once on mount
     setFound(list.filter((s) => slugs.includes(s)));
   }, [slug, slugs]);
 
   if (!found) return null;
   const count = found.length;
+  const done = count === slugs.length;
 
   return (
     <div className="tally">
@@ -37,10 +28,11 @@ export function FoundTally({ slug, slugs }: { slug: string; slugs: string[] }) {
         ))}
       </div>
       <p>
-        {count === slugs.length
-          ? `All ${slugs.length} found. Well done!`
+        {done
+          ? `You found all ${slugs.length} in ${collectionName.toLowerCase()}. Well done!`
           : `${count} of ${slugs.length} hidden verses found`}
       </p>
+      <Link href="/found" className="tally-link">See your collection →</Link>
     </div>
   );
 }

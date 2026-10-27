@@ -821,3 +821,66 @@ a:hover { color: var(--gold-text); }
 .gallery-thumb img { width: 100%; height: 100%; object-fit: cover; }
 .gallery-thumb:hover { opacity: 1; }
 .gallery-thumb[aria-current="true"] { border-color: var(--gold); opacity: 1; }
+
+/* ==========================================================================
+   Phase 3 · Kids' room and attic
+   ========================================================================== */
+
+/* Shared share button outside the verse window */
+.btn-instagram { background: var(--gold); border-color: var(--gold); color: #1c1b17; }
+.btn-instagram:hover { background: var(--ink); border-color: var(--ink); color: var(--linen); }
+.btn-sage { background: var(--sage); border-color: var(--sage); color: #1c1b17; }
+.btn-sage:hover { background: var(--ink); border-color: var(--ink); color: var(--linen); }
+.btn-sage[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--linen); }
+.chip-sage { background: color-mix(in srgb, var(--sage) 35%, transparent); color: var(--ink); }
+
+/* Kids' room */
+.kids-actions { position: relative; margin-top: var(--s-5); }
+.kids-actions .toast { color: var(--ink-soft); }
+.kids-board .btn { border-color: color-mix(in srgb, var(--ink) 25%, transparent); }
+@media (max-width: 560px) {
+  .kids-board::before { width: 140px; height: 140px; right: -70px; top: -70px; }
+  .kids-actions .verse-buttons .btn { flex: 1 1 calc(50% - var(--s-2)); padding-inline: var(--s-2); }
+  .kids-actions .verse-buttons .btn-instagram { flex-basis: 100%; }
+}
+
+.doodle { margin-top: var(--s-7); display: flex; flex-direction: column; gap: var(--s-4); }
+.doodle-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: var(--s-3); }
+.doodle-head h2 { font-size: var(--t-2xl); margin-top: var(--s-1); }
+.doodle-note { color: var(--ink-soft); font-size: var(--t-sm); }
+.doodle-tools { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--s-3); }
+.swatches-row { display: flex; gap: var(--s-2); }
+.swatch { width: 36px; height: 36px; border-radius: 50%; border: 3px solid var(--linen); box-shadow: 0 0 0 1.5px var(--line-strong); cursor: pointer; padding: 0; transition: transform 0.15s; }
+.swatch[aria-checked="true"] { box-shadow: 0 0 0 3px var(--ink); transform: scale(1.08); }
+.doodle-buttons { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+.doodle-buttons .btn[aria-pressed="true"] { background: var(--chip); border-color: var(--gold); }
+.doodle-canvas {
+  width: 100%;
+  max-width: 100%;
+  aspect-ratio: 3 / 2;
+  height: auto;
+  border-radius: var(--radius-lg);
+  border: 1.5px solid var(--line-strong);
+  background: #fffcf3;
+  touch-action: none;
+  cursor: crosshair;
+  box-shadow: var(--shadow);
+}
+.doodle-canvas.is-erasing { cursor: cell; }
+.doodle .toast { color: var(--ink-soft); }
+
+/* Attic */
+.found-actions { margin-top: var(--s-5); padding-top: var(--s-4); border-top: 1px dashed var(--line-strong); }
+.found-actions .toast { color: var(--ink-soft); }
+.tally-link { font-size: var(--t-sm); }
+
+.collection { padding-top: var(--s-5); }
+.slots { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: var(--s-4); }
+@media (max-width: 760px) { .slots { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.slot { aspect-ratio: 4 / 3; max-width: 100%; border-radius: 4px; display: grid; }
+.slot a, .slot-hidden { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--s-2); padding: var(--s-3); text-align: center; border-radius: 4px; text-decoration: none; }
+.slot.is-found a { background: var(--paper); border: 1px solid var(--line); box-shadow: var(--shadow); font-family: var(--f-display); font-weight: 700; line-height: 1.2; }
+.slot.is-found a:hover { border-color: var(--gold); color: inherit; }
+.slot-mark { width: 14px; height: 14px; border-radius: 50%; background: var(--gold); }
+.slot-hidden { border: 1.5px dashed var(--line-strong); color: var(--ink-soft); font-family: var(--f-hand); font-size: 2.2rem; }
+.collection-empty { margin-top: var(--s-5); font-size: 1.35rem; }
