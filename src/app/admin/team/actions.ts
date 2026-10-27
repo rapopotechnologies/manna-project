@@ -28,7 +28,7 @@ export async function addMember(_prev: TeamState, formData: FormData): Promise<T
   if (existing) {
     const { error } = await service.auth.admin.updateUserById(existing, {
       password: tempPassword,
-      app_metadata: { must_change_password: true },
+      user_metadata: { must_change_password: true },
     });
     if (error) return { error: `Couldn’t set up their login: ${error.message}` };
   } else {
@@ -36,7 +36,7 @@ export async function addMember(_prev: TeamState, formData: FormData): Promise<T
       email,
       password: tempPassword,
       email_confirm: true,
-      app_metadata: { must_change_password: true },
+      user_metadata: { must_change_password: true },
     });
     if (error) return { error: `Couldn’t create their login: ${error.message}` };
   }
@@ -56,8 +56,8 @@ export async function resetPassword(_prev: TeamState, formData: FormData): Promi
   const tempPassword = temporaryPassword();
   const id = await findUserId(email);
   const result = id
-    ? await service.auth.admin.updateUserById(id, { password: tempPassword, app_metadata: { must_change_password: true } })
-    : await service.auth.admin.createUser({ email, password: tempPassword, email_confirm: true, app_metadata: { must_change_password: true } });
+    ? await service.auth.admin.updateUserById(id, { password: tempPassword, user_metadata: { must_change_password: true } })
+    : await service.auth.admin.createUser({ email, password: tempPassword, email_confirm: true, user_metadata: { must_change_password: true } });
   if (result.error) return { error: `Couldn’t reset it: ${result.error.message}` };
   return { done: "reset", email, tempPassword };
 }

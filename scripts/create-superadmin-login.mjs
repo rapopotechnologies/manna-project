@@ -36,7 +36,7 @@ const password = `manna-${group()}-${group()}-${group()}`;
 const { data: list, error: listError } = await supabase.auth.admin.listUsers({ page: 1, perPage: 1000 });
 if (listError) throw listError;
 const existing = list.users.find((u) => u.email?.toLowerCase() === EMAIL);
-const attrs = { password, app_metadata: { must_change_password: true } };
+const attrs = { password, user_metadata: { must_change_password: true } };
 const { error } = existing
   ? await supabase.auth.admin.updateUserById(existing.id, attrs)
   : await supabase.auth.admin.createUser({ email: EMAIL, email_confirm: true, ...attrs });
