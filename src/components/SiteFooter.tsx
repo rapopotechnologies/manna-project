@@ -40,6 +40,7 @@ export function SiteFooter() {
               <li><Link href="/daily">Today’s verse</Link></li>
               <li><Link href="/kids">Manna Kids question</Link></li>
               <li><Link href="/my-manna">My manna jar</Link></li>
+              <li><Link href="/account">Your account</Link></li>
               <li><Link href="/contact">Contact & FAQ</Link></li>
             </ul>
           </div>

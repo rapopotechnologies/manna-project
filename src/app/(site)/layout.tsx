@@ -1,3 +1,4 @@
+import { AccountSync } from "@/components/account/AccountSync";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 
@@ -9,6 +10,7 @@ export default function SiteLayout({ children }: Readonly<{ children: React.Reac
       <SiteHeader />
       <main id="main">{children}</main>
       <SiteFooter />
+      <AccountSync />
     </>
   );
 }

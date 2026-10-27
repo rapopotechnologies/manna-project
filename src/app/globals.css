@@ -995,3 +995,41 @@ a:hover { color: var(--gold-text); }
 .sticker-grid li.pop::after { animation: sticker-pop 0.5s cubic-bezier(0.3, 1.6, 0.5, 1) both; }
 @keyframes sticker-pop { from { transform: scale(0) rotate(-30deg); } to { transform: none; } }
 .btn:disabled { opacity: 0.6; cursor: default; }
+
+/* ==========================================================================
+   Phase 8 · Reader accounts
+   ========================================================================== */
+.account-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--s-7); align-items: start; }
+@media (max-width: 860px) { .account-grid { grid-template-columns: minmax(0, 1fr); gap: var(--s-5); } }
+.account-why { display: flex; flex-direction: column; gap: var(--s-4); }
+.account-why h2 { font-size: var(--t-2xl); }
+.auth-card { background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: var(--s-6); display: flex; flex-direction: column; gap: var(--s-4); box-shadow: var(--shadow); }
+.auth-card h2 { font-size: var(--t-xl); }
+.auth-tabs { display: grid; grid-template-columns: 1fr 1fr; padding: 4px; border-radius: 999px; background: var(--linen); border: 1px solid var(--line); }
+.auth-tabs button { border: 0; background: transparent; color: var(--ink-soft); padding: 0.6rem; border-radius: 999px; font-family: var(--f-label); font-weight: 700; font-size: var(--t-xs); letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; }
+.auth-tabs button[aria-selected="true"] { background: var(--ink); color: var(--linen); }
+.auth-form { display: flex; flex-direction: column; gap: var(--s-4); }
+.auth-field { display: flex; flex-direction: column; gap: var(--s-1); }
+.auth-field > span { font-family: var(--f-label); font-weight: 700; font-size: var(--t-xs); letter-spacing: 0.1em; text-transform: uppercase; }
+.auth-field small { color: var(--ink-soft); font-size: 0.8rem; }
+.auth-field input { width: 100%; padding: 0.75rem 0.85rem; border-radius: 12px; border: 1px solid var(--line-strong); background: var(--linen); color: var(--ink); font: inherit; font-size: 1rem; }
+.auth-field input:focus { outline: 2px solid var(--gold); outline-offset: 1px; }
+.auth-message { padding: var(--s-3) var(--s-4); border-radius: 12px; font-size: var(--t-sm); }
+.auth-message.ok { background: color-mix(in srgb, var(--sage) 22%, transparent); }
+.auth-message.error { background: color-mix(in srgb, #e0785e 18%, transparent); }
+.auth-switch { font-size: var(--t-sm); }
+.auth-or { display: flex; align-items: center; gap: var(--s-3); color: var(--ink-soft); font-size: var(--t-sm); }
+.auth-or::before, .auth-or::after { content: ""; flex: 1; height: 1px; background: var(--line-strong); }
+.btn-google { background: #fff; color: #1f1f1f; border-color: #dadce0; text-transform: none; letter-spacing: 0; font-size: 0.95rem; }
+.btn-google:hover { background: #f8f9fa; color: #1f1f1f; border-color: #c6c6c6; }
+.link-button { background: none; border: 0; padding: 0; font: inherit; color: inherit; text-decoration: underline; text-decoration-color: var(--gold); text-underline-offset: 4px; cursor: pointer; }
+.account-signed-in { display: flex; flex-direction: column; gap: var(--s-5); max-width: 760px; }
+.account-email { word-break: break-all; font-size: var(--t-xl) !important; }
+.account-small-head { font-size: var(--t-lg); }
+.account-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-3); }
+.account-stats div { padding: var(--s-3); border-radius: 14px; background: var(--linen); display: flex; flex-direction: column; }
+.account-stats b { font-family: var(--f-display); font-size: 1.8rem; font-variant-numeric: tabular-nums; }
+.account-stats span { font-size: var(--t-sm); color: var(--ink-soft); }
+.btn-danger { border-color: #c4553b; color: #c4553b; }
+.btn-danger:hover { background: #c4553b; border-color: #c4553b; color: #fff; }
+.account-invite { margin-top: var(--s-2); }

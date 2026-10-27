@@ -37,6 +37,7 @@ export function Reflect({ dayKey }: { dayKey: string }) {
     setNotes(next);
     try {
       localStorage.setItem(storageKey(dayKey), JSON.stringify(next));
+      window.dispatchEvent(new Event("manna:local-change"));
       setSaved(true);
     } catch {
       setSaved(false);

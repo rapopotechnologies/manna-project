@@ -23,10 +23,11 @@ async function Overview() {
   const today = dayKeyFor(new Date());
   const days = Array.from({ length: 7 }, (_, i) => shiftDayKey(today, i - 6));
 
-  const [{ data: counts }, { data: products }, { data: changes }] = await Promise.all([
+  const [{ data: counts }, { data: products }, { data: changes }, { count: waiting }] = await Promise.all([
     supabase.from("daily_counts").select("day, metric, key, count").gte("day", days[0]),
     supabase.from("products").select("slug, name").order("sort_order"),
     supabase.from("change_log").select("id, at, actor, action, target_table, target_id").order("at", { ascending: false }).limit(6),
+    supabase.from("readers").select("user_id", { count: "exact", head: true }).eq("status", "pending"),
   ]);
 
   const rows = counts ?? [];
@@ -47,6 +48,12 @@ async function Overview() {
       intro="Totals from the last 7 days, counted privately: no cookies and no personal data."
       actions={<a className="btn" href={VERCEL_ANALYTICS} target="_blank" rel="noopener noreferrer">Full analytics on Vercel ↗</a>}
     >
+      {(waiting ?? 0) > 0 && (
+        <Link href="/admin/readers" className="notice notice-warn waiting-link">
+          {waiting} new {waiting === 1 ? "reader is" : "readers are"} waiting for approval →
+        </Link>
+      )}
+
       <div className="stat-row">
         <div className="stat"><b>{total("verse_view")}</b><span>Verse page visits</span></div>
         <div className="stat"><b>{total("qr_scan")}</b><span>QR code scans</span></div>

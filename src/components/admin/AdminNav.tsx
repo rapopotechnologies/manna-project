@@ -8,6 +8,7 @@ const links = [
   { href: "/admin/products", label: "Products" },
   { href: "/admin/verses", label: "Hidden verses" },
   { href: "/admin/kids", label: "Kids questions" },
+  { href: "/admin/readers", label: "Readers" },
   { href: "/admin/history", label: "Change history" },
 ];
 

@@ -10,6 +10,7 @@ type Table<Row, Required extends keyof Row> = {
 };
 
 export type AdminRole = "superadmin" | "admin";
+export type ReaderStatus = "pending" | "approved" | "declined";
 
 export type Database = {
   __InternalSupabase: { PostgrestVersion: "14.18" };
@@ -43,6 +44,14 @@ export type Database = {
         },
         "slug" | "reference" | "lines"
       >;
+      readers: Table<
+        { user_id: string; email: string; status: ReaderStatus; signed_up_at: string; decided_at: string | null; decided_by: string | null },
+        "user_id" | "email"
+      >;
+      reader_data: Table<
+        { user_id: string; progress: Json; reflections: Json; found: string[]; updated_at: string },
+        "user_id"
+      >;
       kids_questions: Table<{ id: number; position: number; question: string; updated_at: string }, "position" | "question">;
       products: Table<
         {
@@ -67,8 +76,9 @@ export type Database = {
     Views: { [_ in never]: never };
     Functions: {
       track: { Args: { metric: string; key?: string }; Returns: undefined };
+      delete_my_account: { Args: Record<string, never>; Returns: undefined };
     };
-    Enums: { admin_role: AdminRole };
+    Enums: { admin_role: AdminRole; reader_status: ReaderStatus };
     CompositeTypes: { [_ in never]: never };
   };
 };
