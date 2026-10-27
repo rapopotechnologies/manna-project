@@ -27,6 +27,7 @@ export function AdminShell({ admin, title, intro, actions, children }: Props) {
           <span className="admin-email">{admin.email}</span>
           <span className="admin-role">{admin.role === "superadmin" ? "Superadmin" : "Admin"}</span>
           <div className="admin-who-actions">
+            <Link href="/admin/account">Your password</Link>
             <Link href="/" target="_blank">View site ↗</Link>
             <form action={signOut}>
               <button type="submit" className="link-button">Sign out</button>

@@ -66,7 +66,6 @@ export type Database = {
     };
     Views: { [_ in never]: never };
     Functions: {
-      is_team_email: { Args: { check_email: string }; Returns: boolean };
       track: { Args: { metric: string; key?: string }; Returns: undefined };
     };
     Enums: { admin_role: AdminRole };
