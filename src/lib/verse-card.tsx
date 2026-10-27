@@ -4,15 +4,15 @@ import { ImageResponse } from "next/og";
 import type { DailyVerse } from "@/lib/verse";
 import { formatDayLabel } from "@/lib/day";
 
-const LINEN = "#F8F3E6";
-const INK = "#1C1B17";
-const GOLD = "#E1AD37";
-const GOLD_TEXT = "#8A6208";
+export const LINEN = "#F8F3E6";
+export const INK = "#1C1B17";
+export const GOLD = "#E1AD37";
+export const GOLD_TEXT = "#8A6208";
 
 type CardFont = { name: string; data: Buffer; weight: 500 | 700; style: "normal" };
 let assets: Promise<{ fonts: CardFont[]; wordmark: string }> | null = null;
 
-function loadAssets() {
+export function loadAssets() {
   assets ??= (async () => {
     const dir = join(process.cwd(), "src/assets/fonts");
     const [literata, montserrat, caveat, wordmark] = await Promise.all([

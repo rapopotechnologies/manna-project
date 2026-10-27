@@ -4,6 +4,12 @@ const nextConfig: NextConfig = {
   cacheComponents: true,
   partialPrefetching: true,
 
+  // Product photos are 600–700 KB JPEGs; serve resized AVIF/WebP instead.
+  images: {
+    formats: ["image/avif", "image/webp"],
+    minimumCacheTTL: 60 * 60 * 24 * 30,
+  },
+
   // Old addresses from the original static site. These may be printed on
   // products (the daily verse QR code especially), so they must never break.
   // All are permanent (308).
