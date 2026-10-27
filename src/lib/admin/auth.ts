@@ -20,13 +20,13 @@ export const getSignedIn = cache(async () => {
   if (!claims || !email) return null;
   // Row-level security only returns team rows to team members.
   const { data: row } = await supabase.from("admins").select("role").eq("email", email).maybeSingle();
-  const appMeta = (claims.app_metadata ?? {}) as { must_change_password?: boolean };
+  const userMeta = (claims.user_metadata ?? {}) as { must_change_password?: boolean };
   return {
     supabase,
     userId: String(claims.sub),
     email,
     role: row?.role ?? null,
-    mustChangePassword: appMeta.must_change_password === true,
+    mustChangePassword: userMeta.must_change_password === true,
   };
 });
 
