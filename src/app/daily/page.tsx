@@ -44,6 +44,7 @@ export default async function DailyPage() {
         </blockquote>
 
         <VerseActions
+          dayKey={verse.dayKey}
           text={verse.text}
           reference={verse.reference}
           version={verse.version}

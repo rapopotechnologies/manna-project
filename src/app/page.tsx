@@ -1,25 +1,28 @@
 import Link from "next/link";
-import Image from "next/image";
-import { products } from "@/data/products";
+import { ProductCard } from "@/components/shop/ProductCard";
+import { findProduct } from "@/data/products";
+import { getTodaysQuestion } from "@/lib/kids";
 import { getTodaysManna } from "@/lib/verse";
 
-const featured = ["bible-reading-tracker", "book-of-the-bible-bookmarks-bundle", "floral-line-digital-stickers"];
+const featured = ["bible-reading-tracker", "book-of-the-bible-bookmarks-bundle", "bible-journal-basic-stickers"];
 
 export default async function HomePage() {
-  const verse = await getTodaysManna();
-  const picks = featured.map((slug) => products.find((p) => p.slug === slug)!).filter(Boolean);
+  const [verse, kids] = await Promise.all([getTodaysManna(), getTodaysQuestion()]);
+  const picks = featured.map(findProduct).filter((p): p is NonNullable<typeof p> => Boolean(p));
 
   return (
     <div className="wrap">
+      {/* Front porch */}
       <section className="porch">
         <div className="porch-lockup">
+          <span className="porch-sun" aria-hidden="true" />
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img className="lockup-ink" src="/brand/manna-lockup.png" alt="Manna Project: cultivating faith, crafting grace" width={1066} height={579} />
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img className="lockup-light" src="/brand/manna-lockup-light.png" alt="" aria-hidden="true" width={1066} height={579} />
         </div>
         <div className="porch-copy">
-          <h1 style={{ fontSize: "var(--t-3xl)" }}>
+          <h1 className="porch-title">
             Faith for the <span className="brush">everyday</span>.
           </h1>
           <p>
@@ -33,6 +36,7 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* Welcome mat: today's verse */}
       <Link className="welcome-mat" href="/daily">
         <span className="welcome-sun" aria-hidden="true" />
         <span>
@@ -43,40 +47,73 @@ export default async function HomePage() {
         <span className="welcome-go">Read & reflect</span>
       </Link>
 
-      <nav className="doors" aria-label="Explore">
-        <Link className="door" href="/shop">
-          <span className="door-knob" aria-hidden="true" />
-          <b>Shop</b>
-          <small>Bible bookmarks, a reading tracker and journaling stickers, made by hand.</small>
-        </Link>
-        <Link className="door" href="/kids">
-          <span className="door-knob" aria-hidden="true" />
-          <b>Manna Kids</b>
-          <small>One question a day for kids to answer, draw, or talk through with you.</small>
-        </Link>
-        <Link className="door" href="/about">
-          <span className="door-knob" aria-hidden="true" />
-          <b>About</b>
-          <small>Why Manna Project exists, and who makes it.</small>
-        </Link>
-      </nav>
+      {/* A day with Manna: the free rhythms, in the order of a day */}
+      <section className="section" aria-labelledby="day">
+        <div className="section-head">
+          <div>
+            <span className="label">Free, every day</span>
+            <h2 id="day">A day with Manna</h2>
+          </div>
+        </div>
+        <ol className="day-arc">
+          <li className="day-stop">
+            <span className="day-sun day-sun-morning" aria-hidden="true" />
+            <span className="day-time">Morning</span>
+            <b>Read today’s verse</b>
+            <p>A new verse every day. Share it to your Instagram story in one tap.</p>
+            <Link href="/daily">Open today’s verse →</Link>
+          </li>
+          <li className="day-stop">
+            <span className="day-sun day-sun-noon" aria-hidden="true" />
+            <span className="day-time">Any quiet moment</span>
+            <b>Spend five minutes with it</b>
+            <p>A short S.O.A.P. reflection: Scripture, Observation, Application, Prayer.</p>
+            <Link href="/daily">Reflect on it →</Link>
+          </li>
+          <li className="day-stop">
+            <span className="day-sun day-sun-evening" aria-hidden="true" />
+            <span className="day-time">Dinner time</span>
+            <b>Ask the kids</b>
+            <p className="day-quote">“{kids.question}”</p>
+            <Link href="/kids">Today’s Manna Kids question →</Link>
+          </li>
+        </ol>
+      </section>
 
+      {/* Workshop */}
       <section className="section" aria-labelledby="featured">
         <div className="section-head">
-          <h2 id="featured">From the workshop</h2>
-          <Link href="/shop">See everything →</Link>
+          <div>
+            <span className="label">The workshop</span>
+            <h2 id="featured">Tools for your quiet time</h2>
+          </div>
+          <Link href="/shop">See all 6 →</Link>
         </div>
         <div className="products">
           {picks.map((p) => (
-            <article className="product" key={p.slug}>
-              <a className="product-photo" href={p.etsyUrl} target="_blank" rel="noopener noreferrer">
-                <Image src={p.images[0]} alt={p.name} width={1000} height={800} sizes="(max-width: 560px) 100vw, (max-width: 900px) 50vw, 360px" />
-              </a>
-              <span className="chip">{p.category}</span>
-              <h3>{p.name}</h3>
-            </article>
+            <ProductCard key={p.slug} product={p} />
           ))}
         </div>
+      </section>
+
+      {/* Living room teaser */}
+      <section className="section" aria-labelledby="about-teaser">
+        <div className="about-strip">
+          <div>
+            <span className="label">About Manna Project</span>
+            <h2 id="about-teaser">Life is more than the daily grind.</h2>
+          </div>
+          <div className="about-strip-copy">
+            <p>
+              We celebrate a crossed-off to-do list, and we also make room for the quiet moments with God that a busy
+              day crowds out. Everything here is made to help with that.
+            </p>
+            <Link className="btn" href="/about">Read our story</Link>
+          </div>
+        </div>
+        <p className="hidden-hint hand">
+          Psst: ten verses are tucked away around Manna Project. Keep an eye out.
+        </p>
       </section>
     </div>
   );
