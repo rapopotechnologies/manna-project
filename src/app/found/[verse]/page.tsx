@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { FoundTally } from "@/components/FoundTally";
-import { findHiddenVerse, hiddenVerses } from "@/data/hidden-verses";
+import { FoundActions } from "@/components/found/FoundActions";
+import { FoundTally } from "@/components/found/FoundTally";
+import { collectionFor, findHiddenVerse, hiddenVerses } from "@/data/hidden-verses";
 
 export function generateStaticParams() {
   return hiddenVerses.map((v) => ({ verse: v.slug }));
@@ -21,6 +22,7 @@ export default async function FoundPage({ params }: PageProps<"/found/[verse]">)
   const { verse: slug } = await params;
   const verse = findHiddenVerse(slug);
   if (!verse) notFound();
+  const collection = collectionFor(verse.slug);
 
   return (
     <div className="wrap attic">
@@ -34,8 +36,14 @@ export default async function FoundPage({ params }: PageProps<"/found/[verse]">)
         <p className="note-ref">
           {verse.reference} · {verse.translation}
         </p>
+        <FoundActions
+          slug={verse.slug}
+          text={verse.lines.join(" ")}
+          reference={verse.reference}
+          translation={verse.translation}
+        />
       </article>
-      <FoundTally slug={verse.slug} slugs={hiddenVerses.map((v) => v.slug)} />
+      {collection && <FoundTally slug={verse.slug} slugs={collection.slugs} collectionName={collection.name} />}
     </div>
   );
 }

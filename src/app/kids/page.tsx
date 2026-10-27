@@ -1,18 +1,25 @@
 import type { Metadata } from "next";
+import { DoodlePad } from "@/components/kids/DoodlePad";
+import { KidsActions } from "@/components/kids/KidsActions";
 import { formatDayLabel } from "@/lib/day";
 import { getTodaysQuestion } from "@/lib/kids";
 
-export const metadata: Metadata = {
-  title: "Manna Kids question of the day",
-  description: "One question a day for kids to answer, draw, or talk about at the dinner table.",
-  alternates: { canonical: "/kids" },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { question } = await getTodaysQuestion();
+  return {
+    title: "Manna Kids question of the day",
+    description: question,
+    alternates: { canonical: "/kids" },
+    openGraph: { title: "Today’s Manna Kids question", description: question, url: "/kids" },
+    twitter: { card: "summary_large_image", title: "Today’s Manna Kids question", description: question },
+  };
+}
 
 export default async function KidsPage() {
   const { dayKey, question, number, yesterday } = await getTodaysQuestion();
 
   return (
-    <div className="wrap">
+    <div className="wrap kids-room">
       <header className="plaque">
         <span className="label">Manna Kids</span>
         <h1>
@@ -24,9 +31,11 @@ export default async function KidsPage() {
       <section className="kids-board" aria-labelledby="kids-q">
         <div className="kids-meta">
           <span className="hand" style={{ fontSize: "1.6rem" }}>{formatDayLabel(dayKey)}</span>
-          <span className="chip">Question {number} of 100</span>
+          <span className="chip chip-sage">Question {number} of 100</span>
         </div>
         <h2 id="kids-q" className="kids-question">{question}</h2>
+
+        <KidsActions question={question} dayKey={dayKey} />
 
         <div className="kids-prompts">
           <div>
@@ -35,7 +44,7 @@ export default async function KidsPage() {
           </div>
           <div>
             <b>Draw it</b>
-            <p>Draw your answer in your Manna Kids journal.</p>
+            <p>Draw your answer below, or in your Manna Kids journal.</p>
           </div>
           <div>
             <b>Thank God for it</b>
@@ -43,6 +52,8 @@ export default async function KidsPage() {
           </div>
         </div>
       </section>
+
+      <DoodlePad dayKey={dayKey} />
 
       <p className="yesterday">
         Yesterday’s question: <b>{yesterday}</b>

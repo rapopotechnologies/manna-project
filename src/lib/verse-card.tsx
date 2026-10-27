@@ -72,9 +72,25 @@ const specs: Record<CardLayout, Spec> = {
   landscape: { width: 1200, height: 630, padX: 72, padTop: 72, padBottom: 72, sun: 220, sunTop: -60, sunRight: 70, glowStop: 60, date: 40, verse: 46, ref: 22, gap: 24, maxWidth: 860, logo: [190, 77], url: 18 },
 };
 
-export async function renderVerseCard(verse: DailyVerse, layout: CardLayout, headers?: Record<string, string>) {
+/** What goes on a card. Used for the daily verse, the kids' question and hidden verses. */
+export type CardContent = {
+  kicker: string;
+  body: string;
+  quote: boolean;
+  caption: string;
+  url: string;
+  theme?: "sun" | "sage";
+};
+
+const themes = {
+  sun: { top: "#FBE3A4", disc: GOLD, glow: "225,173,55", caption: GOLD_TEXT },
+  sage: { top: "#D5E7E1", disc: "#94BDB5", glow: "148,189,181", caption: "#3F6B5C" },
+};
+
+export async function renderCard(card: CardContent, layout: CardLayout, headers?: Record<string, string>) {
   const { fonts, wordmark } = await loadAssets();
   const s = specs[layout];
+  const t = themes[card.theme ?? "sun"];
 
   return new ImageResponse(
     (
@@ -85,7 +101,7 @@ export async function renderVerseCard(verse: DailyVerse, layout: CardLayout, hea
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          background: `linear-gradient(180deg, #FBE3A4 0%, ${LINEN} ${s.glowStop}%)`,
+          background: `linear-gradient(180deg, ${t.top} 0%, ${LINEN} ${s.glowStop}%)`,
           padding: `${s.padTop}px ${s.padX}px ${s.padBottom}px`,
           position: "relative",
           color: INK,
@@ -97,14 +113,14 @@ export async function renderVerseCard(verse: DailyVerse, layout: CardLayout, hea
             width: s.sun,
             height: s.sun,
             borderRadius: s.sun,
-            background: GOLD,
+            background: t.disc,
             right: s.sunRight,
             top: s.sunTop,
-            boxShadow: `0 0 0 ${s.sun * 0.12}px rgba(225,173,55,0.22), 0 0 0 ${s.sun * 0.28}px rgba(225,173,55,0.1)`,
+            boxShadow: `0 0 0 ${s.sun * 0.12}px rgba(${t.glow},0.22), 0 0 0 ${s.sun * 0.28}px rgba(${t.glow},0.1)`,
           }}
         />
-        <div style={{ display: "flex", fontFamily: "Caveat", fontSize: s.date, color: GOLD_TEXT }}>
-          {formatDayLabel(verse.dayKey)}
+        <div style={{ display: "flex", fontFamily: "Caveat", fontSize: s.date, lineHeight: 1.15, color: t.caption, maxWidth: s.width - s.padX - s.sunRight - s.sun - 40 }}>
+          {card.kicker}
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: s.gap, maxWidth: s.maxWidth }}>
@@ -112,12 +128,12 @@ export async function renderVerseCard(verse: DailyVerse, layout: CardLayout, hea
             style={{
               display: "flex",
               fontFamily: "Literata",
-              fontSize: verseSize(verse.text, s.verse),
+              fontSize: verseSize(card.body, s.verse),
               lineHeight: 1.38,
               letterSpacing: -0.5,
             }}
           >
-            {`“${verse.text}”`}
+            {card.quote ? `“${card.body}”` : card.body}
           </div>
           <div
             style={{
@@ -125,11 +141,11 @@ export async function renderVerseCard(verse: DailyVerse, layout: CardLayout, hea
               fontFamily: "Montserrat",
               fontSize: s.ref,
               letterSpacing: 5,
-              color: GOLD_TEXT,
+              color: t.caption,
               textTransform: "uppercase",
             }}
           >
-            {`${verse.reference} · ${verse.version}`}
+            {card.caption}
           </div>
         </div>
 
@@ -137,11 +153,31 @@ export async function renderVerseCard(verse: DailyVerse, layout: CardLayout, hea
           {/* eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text */}
           <img src={wordmark} width={s.logo[0]} height={s.logo[1]} />
           <div style={{ display: "flex", fontFamily: "Montserrat", fontSize: s.url, letterSpacing: 3, color: INK }}>
-            BYMANNAPROJECT.COM/DAILY
+            {card.url.toUpperCase()}
           </div>
         </div>
       </div>
     ),
     { width: s.width, height: s.height, fonts, headers },
   );
+}
+
+/** Today's verse as a card. */
+export function renderVerseCard(verse: DailyVerse, layout: CardLayout, headers?: Record<string, string>) {
+  return renderCard(
+    {
+      kicker: formatDayLabel(verse.dayKey),
+      body: verse.text,
+      quote: true,
+      caption: `${verse.reference} · ${verse.version}`,
+      url: "bymannaproject.com/daily",
+    },
+    layout,
+    headers,
+  );
+}
+
+/** Reads ?format=story|post from a card request. */
+export function layoutFromRequest(url: URL): CardLayout {
+  return url.searchParams.get("format") === "story" ? "story" : "post";
 }
