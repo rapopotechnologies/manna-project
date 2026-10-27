@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { ShareToInstagram } from "@/components/ShareToInstagram";
+import { track } from "@/lib/track";
 
 type Props = {
   dayKey: string;
@@ -27,6 +28,7 @@ export function VerseActions({ dayKey, text, reference, version, chapterHref, ca
     if (navigator.share) {
       try {
         await navigator.share(data);
+        track("link_share", "daily");
       } catch {
         // The person closed the share sheet; nothing to do.
       }
@@ -56,6 +58,7 @@ export function VerseActions({ dayKey, text, reference, version, chapterHref, ca
           storyUrl={`/daily/card?format=story&d=${dayKey}`}
           filename={`manna-${dayKey}-story.png`}
           title={`Today’s verse: ${reference}`}
+          trackKey="daily"
           onStatus={flash}
         />
         <button type="button" className="btn" onClick={share}>Share link</button>

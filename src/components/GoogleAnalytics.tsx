@@ -37,6 +37,7 @@ export function GoogleAnalytics() {
   const pathname = usePathname();
 
   useEffect(() => {
+    if (pathname.startsWith("/admin")) return;
     gtag("config", idFor(pathname), { page_path: pathname + window.location.search });
   }, [pathname]);
 
