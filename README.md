@@ -46,20 +46,30 @@ The original site is kept in `legacy-site/` for reference. Design source files a
 
 Supabase project **manna-project** (`duucrnfjegoqbmkmtfoa`, free plan, us-east-1) holds products, hidden verses, collections, kids' questions, the admin team, a change log, and daily visit totals. Every table uses row-level security. Public pages read through `src/lib/content.ts`, cached and refreshed the moment an admin publishes; if Supabase is unreachable or paused, they fall back to the copies in `src/data/`.
 
-The superadmin is `rapopotechnologies@gmail.com`. They invite other admins from `/admin/team`.
+The superadmin is `rapopotechnologies@gmail.com`.
+
+### Admin sign-in (email + password)
+
+- Only the superadmin creates logins. On `/admin/team`, adding an email creates the account with a temporary password that's shown once, to pass along. Nothing is emailed.
+- At first sign-in, a temporary password must be replaced before anything else.
+- Forgotten password: the superadmin clicks "Reset password" on the team page.
+- Removing someone deletes their login.
+- Google sign-in is planned for later.
 
 Local development needs `.env.local` (not committed):
 
 ```
 NEXT_PUBLIC_SUPABASE_URL=https://duucrnfjegoqbmkmtfoa.supabase.co
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_…
+SUPABASE_SECRET_KEY=sb_secret_…   # server only; never prefix with NEXT_PUBLIC
 ```
 
-### One-time setup before the admin works in production
+### One-time setup
 
-1. **Vercel → Project → Settings → Environment Variables:** add the two variables above for Production and Preview, then redeploy.
-2. **Supabase → Authentication → URL Configuration:** set Site URL to `https://bymannaproject.com`, and add these Redirect URLs: `https://bymannaproject.com/admin/auth/callback`, `https://*.vercel.app/admin/auth/callback`, `http://localhost:3000/admin/auth/callback`.
-3. **Supabase → Authentication → Emails → SMTP:** connect a real email sender (for example Resend) with a Manna Project address. Until then Supabase only emails the account owner, so invited admins won't receive sign-in links.
+1. **Supabase → Project Settings → API Keys:** copy the secret key (`sb_secret_…`) into `.env.local` as `SUPABASE_SECRET_KEY`.
+2. **Vercel → Project → Settings → Environment Variables:** add all three variables above for Production and Preview, then redeploy. Mark the secret key as sensitive.
+3. **Supabase → Authentication → Sign In / Providers:** turn off "Allow new users to sign up". Logins are only created from the team page.
+4. **Your superadmin login:** run `node scripts/create-superadmin-login.mjs`, sign in at `/admin/login` with the temporary password it prints, and choose your own.
 
 ## Deploy (Vercel)
 

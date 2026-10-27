@@ -1,23 +1,27 @@
 "use client";
 
 import { useActionState } from "react";
-import { sendSignInLink, type LoginState } from "./actions";
+import { signIn, type LoginState } from "./actions";
 
 export function LoginForm() {
-  const [state, action, pending] = useActionState<LoginState, FormData>(sendSignInLink, { status: "idle", message: "" });
+  const [state, action, pending] = useActionState<LoginState, FormData>(signIn, {});
 
   return (
     <form action={action} className="admin-form">
       <label className="field" htmlFor="email">
         <span>Email</span>
-        <input id="email" name="email" type="email" autoComplete="email" required placeholder="you@example.com" />
+        <input id="email" name="email" type="email" autoComplete="username" required />
+      </label>
+      <label className="field" htmlFor="password">
+        <span>Password</span>
+        <input id="password" name="password" type="password" autoComplete="current-password" required />
       </label>
       <button type="submit" className="btn btn-primary" disabled={pending}>
-        {pending ? "Sending…" : "Email me a sign-in link"}
+        {pending ? "Signing in…" : "Sign in"}
       </button>
-      {state.status !== "idle" && (
-        <p className={`notice ${state.status === "error" ? "notice-error" : "notice-ok"}`} role="status">
-          {state.message}
+      {state.error && (
+        <p className="notice notice-error" role="alert">
+          {state.error}
         </p>
       )}
     </form>

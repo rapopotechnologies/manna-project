@@ -143,3 +143,13 @@
 .question-row input { width: 100%; padding: 0.55rem 0.7rem; border-radius: 9px; border: 1px solid var(--line-strong); background: var(--linen); color: var(--ink); font: inherit; }
 .question-row.today { background: var(--chip); border-radius: 10px; padding-inline: var(--s-2); }
 @media (max-width: 640px) { .question-row { grid-template-columns: 2.4rem minmax(0, 1fr); } .question-row > form:last-child, .question-row > button { grid-column: 2; } }
+
+/* Team */
+.member-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.member-list > li { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: var(--s-4); padding-block: var(--s-4); border-bottom: 1px dashed var(--line); align-items: start; }
+.member-list b { word-break: break-all; }
+.member-actions { display: flex; flex-direction: column; gap: var(--s-3); align-items: flex-end; }
+.member-actions form { display: inline-flex; gap: 6px; }
+@media (max-width: 760px) { .member-list > li { grid-template-columns: minmax(0, 1fr); } .member-actions { align-items: flex-start; } }
+.temp-password { width: 100%; padding: var(--s-4); border-radius: 12px; background: var(--chip); display: flex; flex-direction: column; gap: var(--s-3); align-items: flex-start; font-size: var(--t-sm); }
+.temp-password pre { margin: 0; width: 100%; padding: var(--s-3); border-radius: 8px; background: var(--paper); border: 1px solid var(--line); font-family: ui-monospace, Menlo, monospace; font-size: 0.85rem; white-space: pre-wrap; word-break: break-all; user-select: all; }

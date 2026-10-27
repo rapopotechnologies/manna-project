@@ -7,7 +7,6 @@ export const metadata: Metadata = { title: "Sign in", robots: { index: false } }
 
 const errors: Record<string, string> = {
   "not-on-team": "You’re signed in, but this email isn’t on the Manna Project team. Ask the superadmin for an invite.",
-  link: "That sign-in link didn’t work. It may have expired or been opened in a different browser. Request a new one.",
 };
 
 async function ErrorNote({ searchParams }: { searchParams: PageProps<"/admin/login">["searchParams"] }) {
@@ -22,7 +21,7 @@ export default function LoginPage({ searchParams }: PageProps<"/admin/login">) {
       <div className="admin-login-card">
         <Wordmark />
         <h1>Team sign-in</h1>
-        <p className="muted">We’ll email you a one-time link. No password needed.</p>
+        <p className="muted">For the Manna Project team. Ask the superadmin if you need an account or a password reset.</p>
         <Suspense fallback={null}>
           <ErrorNote searchParams={searchParams} />
         </Suspense>
