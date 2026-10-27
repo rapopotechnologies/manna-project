@@ -18,6 +18,7 @@ export function addFound(slug: string): string[] {
   const next = [...list, slug];
   try {
     localStorage.setItem(KEY, JSON.stringify(next));
+    window.dispatchEvent(new Event("manna:local-change"));
   } catch {
     // Storage unavailable; the count covers this visit only.
   }

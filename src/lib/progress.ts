@@ -55,6 +55,16 @@ function write(next: Progress) {
 
 const addDay = (list: string[], day: string) => (list.includes(day) ? list : [...list, day].sort());
 
+/** Current progress, for account sync. */
+export function readProgress(): Progress {
+  return read();
+}
+
+/** Replaces progress (after merging with the reader's account) and refreshes the UI. */
+export function replaceProgress(next: Progress) {
+  write(next);
+}
+
 export function gatherToday(day: string, book: string | null): { newPiece: boolean; newBook: string | null } {
   const p = read();
   const newPiece = !p.gathered.includes(day);

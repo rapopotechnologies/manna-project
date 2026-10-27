@@ -18,6 +18,7 @@ const TABLE_NAMES: Record<string, string> = {
   collections: "collection",
   kids_questions: "kids question",
   admins: "team member",
+  readers: "reader",
 };
 const FIELD_NAMES: Record<string, string> = {
   pairs_with: "pairs well with",

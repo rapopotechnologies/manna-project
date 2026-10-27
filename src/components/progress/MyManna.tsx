@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { AccountInvite } from "@/components/account/AccountInvite";
 import { BOOKS } from "@/data/bible-books";
 import { useProgress, weekView } from "@/lib/progress";
 import { Bookshelf } from "./Bookshelf";
@@ -71,9 +72,7 @@ export function MyManna({ today }: { today: string }) {
         </p>
       </section>
 
-      <p className="muted-line">
-        All of this is saved on this device only. Clearing your browser data empties the jar.
-      </p>
+      <AccountInvite />
     </div>
   );
 }

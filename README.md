@@ -26,6 +26,7 @@ npm run build && npm run start   # production build
 | Contact & FAQ | `/contact` | `src/app/(site)/contact/page.tsx` |
 | Support | `/support` | `src/app/(site)/support/page.tsx` (Stripe giving form not built yet) |
 | My manna | `/my-manna` | Manna jar, 66-book shelf, reflection garden. Saved on the reader's device (`src/lib/progress.ts`) |
+| Your account | `/account` | Optional reader accounts (email + password; Google button behind `NEXT_PUBLIC_GOOGLE_SIGNIN=on`). Syncs progress via `src/lib/sync.ts` |
 | Admin | `/admin` | Invite-only. Products, hidden verses, kids' questions, team, change history, traffic |
 
 A "day" runs midnight to midnight Pacific time (`src/lib/day.ts`).
@@ -70,6 +71,13 @@ SUPABASE_SECRET_KEY=sb_secret_…   # server only; never prefix with NEXT_PUBLIC
 2. **Vercel → Project → Settings → Environment Variables:** add all three variables above for Production and Preview, then redeploy. Mark the secret key as sensitive.
 3. **Supabase → Authentication → Sign In / Providers:** turn off "Allow new users to sign up". Logins are only created from the team page.
 4. **Your superadmin login:** run `node scripts/create-superadmin-login.mjs`, sign in at `/admin/login` with the temporary password it prints, and choose your own.
+
+### Reader accounts (one-time setup)
+
+1. **Supabase → Authentication → Sign In / Providers:** turn "Allow new users to sign up" back on, and keep "Confirm email" on. Readers can sign up; admin rights still come only from the team list.
+2. **Resend as Supabase's email sender:** in Resend, verify the `bymannaproject.com` domain (add its DNS records in Cloudflare). Then either use Resend's Supabase integration, or enter it by hand in **Supabase → Authentication → Emails → SMTP Settings**: host `smtp.resend.com`, port `465`, username `resend`, password = a Resend API key, sender like `hello@bymannaproject.com`, name "Manna Project".
+3. **Supabase → Authentication → URL Configuration:** Site URL `https://bymannaproject.com`; redirect URLs `https://bymannaproject.com/auth/callback`, `https://*.vercel.app/auth/callback`, `http://localhost:3000/auth/callback`.
+4. **Later, Google:** create an OAuth client in Google Cloud with redirect URI `https://duucrnfjegoqbmkmtfoa.supabase.co/auth/v1/callback`, paste it into Supabase → Providers → Google, then set `NEXT_PUBLIC_GOOGLE_SIGNIN=on` in Vercel and redeploy.
 
 ## Deploy (Vercel)
 
