@@ -58,7 +58,7 @@ export default async function KidsPage() {
 
       <StickerChart dayKey={dayKey} />
 
-      <DoodlePad dayKey={dayKey} />
+      <DoodlePad dayKey={dayKey} question={question} dateLabel={formatDayLabel(dayKey)} />
 
       <p className="yesterday">
         Yesterday’s question: <b>{yesterday}</b>
