@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AccountLink } from "@/components/account/AccountLink";
 import { NavLinks } from "@/components/NavLinks";
 import { Wordmark } from "@/components/Wordmark";
 
@@ -9,9 +10,12 @@ export function SiteHeader() {
         <Link href="/" className="home-link" aria-label="Manna Project home">
           <Wordmark />
         </Link>
-        <nav aria-label="Main">
-          <NavLinks />
-        </nav>
+        <div className="header-right">
+          <nav aria-label="Main">
+            <NavLinks />
+          </nav>
+          <AccountLink />
+        </div>
       </div>
     </header>
   );

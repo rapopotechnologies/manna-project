@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { CopyButton } from "@/components/CopyButton";
-import { CONTACT_EMAIL, ETSY_SHOP_URL } from "@/data/products";
+import { CONTACT_EMAIL, ETSY_SHOP_URL, SUPPORT_EMAIL } from "@/data/products";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -78,8 +78,11 @@ export default function ContactPage() {
 
         <section className="contact-card contact-card-alt" aria-labelledby="orders">
           <span className="label">Orders</span>
-          <h2 id="orders">Questions about a purchase?</h2>
-          <p>Message us through Etsy so your order details come with your question.</p>
+          <h2 id="orders">Questions about a purchase or your account?</h2>
+          <p>
+            Email <span className="selectable">{SUPPORT_EMAIL}</span>, or message us through Etsy so your order details come with your
+            question.
+          </p>
           <a className="btn btn-gold" href={ETSY_SHOP_URL} target="_blank" rel="noopener noreferrer">
             Go to our Etsy shop ↗
           </a>

@@ -75,7 +75,7 @@ SUPABASE_SECRET_KEY=sb_secret_…   # server only; never prefix with NEXT_PUBLIC
 ### Reader accounts (one-time setup)
 
 1. **Supabase → Authentication → Sign In / Providers:** turn "Allow new users to sign up" back on, and keep "Confirm email" on. Readers can sign up; admin rights still come only from the team list.
-2. **Resend as Supabase's email sender:** in Resend, verify the `bymannaproject.com` domain (add its DNS records in Cloudflare). Then either use Resend's Supabase integration, or enter it by hand in **Supabase → Authentication → Emails → SMTP Settings**: host `smtp.resend.com`, port `465`, username `resend`, password = a Resend API key, sender like `hello@bymannaproject.com`, name "Manna Project".
+2. **Resend as Supabase's email sender:** in Resend, verify the `bymannaproject.com` domain (add its DNS records in Cloudflare). Then either use Resend's Supabase integration, or enter it by hand in **Supabase → Authentication → Emails → SMTP Settings**: host `smtp.resend.com`, port `465`, username `resend`, password = a Resend API key, sender `support@bymannaproject.com` (forwards to the team inbox, so replies arrive), name "Manna Project".
 3. **Supabase → Authentication → URL Configuration:** Site URL `https://bymannaproject.com`; redirect URLs `https://bymannaproject.com/auth/callback`, `https://*.vercel.app/auth/callback`, `http://localhost:3000/auth/callback`.
 4. **Later, Google:** create an OAuth client in Google Cloud with redirect URI `https://duucrnfjegoqbmkmtfoa.supabase.co/auth/v1/callback`, paste it into Supabase → Providers → Google, then set `NEXT_PUBLIC_GOOGLE_SIGNIN=on` in Vercel and redeploy.
 

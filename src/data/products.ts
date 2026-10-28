@@ -21,7 +21,10 @@ export type Product = {
 };
 
 export const ETSY_SHOP_URL = "https://www.etsy.com/shop/MannaProject";
-export const CONTACT_EMAIL = "manna.pjkt@gmail.com";
+/** General questions, ideas and partnerships. Forwards to the team inbox. */
+export const CONTACT_EMAIL = "info@bymannaproject.com";
+/** Order and account help. Also the address site emails are sent from, so replies reach the team. */
+export const SUPPORT_EMAIL = "support@bymannaproject.com";
 
 export const CATEGORY_NOTES: Record<ProductCategory, string> = {
   Journals: "Digital journals for your tablet",
