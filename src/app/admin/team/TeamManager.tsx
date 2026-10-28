@@ -1,5 +1,6 @@
 "use client";
 
+import { SITE_URL } from "@/lib/site";
 import { useActionState, useState } from "react";
 import { addMember, removeMember, resetPassword, type TeamState } from "./actions";
 
@@ -8,7 +9,7 @@ type Member = { email: string; role: "superadmin" | "admin"; created_at: string;
 function TempPassword({ state }: { state: TeamState }) {
   const [copied, setCopied] = useState(false);
   if (!state.tempPassword || !state.email) return null;
-  const text = `Sign in at https://bymannaproject.com/admin/login\nEmail: ${state.email}\nTemporary password: ${state.tempPassword}`;
+  const text = `Sign in at ${SITE_URL}/admin/login\nEmail: ${state.email}\nTemporary password: ${state.tempPassword}`;
   return (
     <div className="temp-password" role="status">
       <p>
