@@ -19,6 +19,13 @@ export type ProductFormValues = {
   images: ImageItem[];
   featured: boolean;
   published: boolean;
+  name_id: string;
+  blurb_id: string;
+  description_id: string;
+  includes_id: string[];
+  details_id: { label: string; value: string }[];
+  price_usd: number | null;
+  price_idr: number | null;
 };
 
 type Props = {
@@ -121,6 +128,50 @@ export function ProductForm({ product, others }: Props) {
           <textarea id="details" name="details" defaultValue={product?.details.map((d) => `${d.label}: ${d.value}`).join("\n")} />
           <small>One per line, written as Label: value. For example, Format: Printable PDF.</small>
         </label>
+      </section>
+
+      <section className="panel">
+        <h2>In Indonesian</h2>
+        <p className="muted">Shown on the Indonesian site (bymannaproject.com/id). Leave a box empty to show the English there instead.</p>
+        <label className="field" htmlFor="name_id">
+          <span>Name</span>
+          <input id="name_id" name="name_id" lang="id" defaultValue={product?.name_id} />
+          <small>Keep the English name if that’s what the Shopee listing is called.</small>
+        </label>
+        <label className="field" htmlFor="blurb_id">
+          <span>Short line</span>
+          <input id="blurb_id" name="blurb_id" lang="id" maxLength={160} defaultValue={product?.blurb_id} />
+        </label>
+        <label className="field" htmlFor="description_id">
+          <span>Description</span>
+          <textarea id="description_id" name="description_id" lang="id" defaultValue={product?.description_id} />
+        </label>
+        <label className="field" htmlFor="includes_id">
+          <span>What’s included</span>
+          <textarea id="includes_id" name="includes_id" lang="id" defaultValue={product?.includes_id.join("\n")} />
+          <small>One item per line.</small>
+        </label>
+        <label className="field" htmlFor="details_id">
+          <span>Details</span>
+          <textarea id="details_id" name="details_id" lang="id" defaultValue={product?.details_id.map((d) => `${d.label}: ${d.value}`).join("\n")} />
+          <small>One per line, written as Label: value. For example, Format: PDF siap cetak.</small>
+        </label>
+      </section>
+
+      <section className="panel">
+        <h2>Prices</h2>
+        <p className="muted">Shown on product pages and shop cards: dollars on the English site, rupiah on the Indonesian site. Leave empty to hide.</p>
+        <div className="field-row">
+          <label className="field" htmlFor="price_usd">
+            <span>Etsy price (US$)</span>
+            <input id="price_usd" name="price_usd" inputMode="decimal" defaultValue={product?.price_usd ?? ""} placeholder="4.50" />
+          </label>
+          <label className="field" htmlFor="price_idr">
+            <span>Shopee price (Rp)</span>
+            <input id="price_idr" name="price_idr" inputMode="numeric" defaultValue={product?.price_idr ?? ""} placeholder="45000" />
+          </label>
+        </div>
+        <small className="muted">Update these when the shop prices change. Sales on Etsy or Shopee won’t show here.</small>
       </section>
 
       {others.length > 0 && (

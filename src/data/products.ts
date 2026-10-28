@@ -20,6 +20,21 @@ export type Product = {
   /** Shopee listing for Indonesian buyers. Falls back to the Shopee shop when missing. */
   shopeeUrl?: string;
   images: { src: string; alt: string }[];
+  /** Indonesian copy; any empty field falls back to the English one. */
+  id?: ProductCopy;
+  /** Etsy price in US dollars (English site). */
+  priceUsd?: number;
+  /** Shopee price in rupiah (Indonesian site). */
+  priceIdr?: number;
+};
+
+/** The words on a product page, in one language. */
+export type ProductCopy = {
+  name?: string;
+  blurb?: string;
+  description?: string;
+  includes?: string[];
+  details?: { label: string; value: string }[];
 };
 
 export const ETSY_SHOP_URL = "https://www.etsy.com/shop/MannaProject";

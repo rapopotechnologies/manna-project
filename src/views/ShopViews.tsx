@@ -7,10 +7,10 @@ import { ProductCard } from "@/components/shop/ProductCard";
 import { CATEGORY_LABELS_ID, CATEGORY_NOTES, CATEGORY_NOTES_ID, CATEGORY_ORDER, ETSY_SHOP_URL, SHOPEE_SHOP_URL } from "@/data/products";
 import { langAlternates, localPath, type Lang } from "@/i18n/lang";
 import { getProduct, getProducts } from "@/lib/content";
+import { formatIdr, formatUsd, productCopy } from "@/lib/product-copy";
 import { SITE_URL } from "@/lib/site";
 
-// Product names, descriptions and details stay in English for now (marked lang="en");
-// everything around them follows the page's language.
+// Product words come from productCopy: Indonesian where the admin has filled it in, otherwise English.
 
 const T = {
   en: {
@@ -132,12 +132,13 @@ export async function productMetadata(lang: Lang, slug: string): Promise<Metadat
   const product = await getProduct(slug);
   if (!product) return {};
   const path = `/shop/${product.slug}`;
+  const { name, blurb } = productCopy(product, lang);
   return {
-    title: product.name,
-    description: product.blurb,
+    title: name,
+    description: blurb,
     alternates: langAlternates(lang, path),
-    openGraph: { title: product.name, description: product.blurb, url: localPath(lang, path), ...(lang === "id" ? { locale: "id_ID" } : {}) },
-    twitter: { card: "summary_large_image", title: product.name, description: product.blurb },
+    openGraph: { title: name, description: blurb, url: localPath(lang, path), ...(lang === "id" ? { locale: "id_ID" } : {}) },
+    twitter: { card: "summary_large_image", title: name, description: blurb },
   };
 }
 
@@ -151,16 +152,24 @@ export async function ProductView({ lang, slug }: { lang: Lang; slug: string }) 
   const pairs = product.pairsWith.map((s) => all.find((p) => p.slug === s)).filter((p): p is NonNullable<typeof p> => Boolean(p));
   const usesSoap = product.slug === "bible-reading-tracker";
   const notes = lang === "id" ? CATEGORY_NOTES_ID : CATEGORY_NOTES;
+  const copy = productCopy(product, lang);
+  // Shipped stickers say so in their (English) details.
+  const shipped = product.details.some((d) => /shipped/i.test(d.value));
 
-  // Structured data so search engines can show the product properly.
+  // Structured data so search engines can show the product properly, with a price for each shop.
+  const offers = [
+    product.priceUsd != null && { "@type": "Offer", price: product.priceUsd.toFixed(2), priceCurrency: "USD", url: product.etsyUrl, availability: "https://schema.org/InStock" },
+    product.priceIdr != null && { "@type": "Offer", price: String(product.priceIdr), priceCurrency: "IDR", url: product.shopeeUrl || SHOPEE_SHOP_URL, availability: "https://schema.org/InStock" },
+  ].filter(Boolean);
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Product",
-    name: product.name,
-    description: product.description,
+    name: copy.name,
+    description: copy.description,
     image: product.images.map((i) => (i.src.startsWith("http") ? i.src : `${SITE_URL}${encodeURI(i.src)}`)),
     brand: { "@type": "Brand", name: "Manna Project" },
     url: `${SITE_URL}${L(`/shop/${product.slug}`)}`,
+    ...(offers.length ? { offers } : {}),
   };
 
   return (
@@ -176,19 +185,25 @@ export async function ProductView({ lang, slug }: { lang: Lang; slug: string }) 
 
         <div className="pdp-info">
           <span className="chip">{notes[product.category]}</span>
-          <h1 lang="en">{product.name}</h1>
-          <p className="pdp-desc" lang="en">{product.description}</p>
+          <h1 lang={copy.lang}>{copy.name}</h1>
+          <p className="pdp-desc" lang={copy.lang}>{copy.description}</p>
 
-          <BuyButtons slug={product.slug} etsyUrl={product.etsyUrl} shopeeUrl={product.shopeeUrl} />
+          <BuyButtons
+            slug={product.slug}
+            etsyUrl={product.etsyUrl}
+            shopeeUrl={product.shopeeUrl}
+            etsyPrice={product.priceUsd != null ? formatUsd(product.priceUsd) : undefined}
+            shopeePrice={product.priceIdr != null ? formatIdr(product.priceIdr) : undefined}
+          />
           <p className="pdp-note">
             {t.note}
-            {product.details.some((d) => /shipped/i.test(d.value)) ? t.shipped : t.download}
+            {shipped ? t.shipped : t.download}
           </p>
 
           <section aria-labelledby="includes">
             <h2 id="includes" className="label">{t.includes}</h2>
-            <ul className="fixtures pdp-list" lang="en">
-              {product.includes.map((item) => (
+            <ul className="fixtures pdp-list" lang={copy.lang}>
+              {copy.includes.map((item) => (
                 <li key={item}>{item}</li>
               ))}
             </ul>
@@ -196,8 +211,8 @@ export async function ProductView({ lang, slug }: { lang: Lang; slug: string }) 
 
           <section aria-labelledby="details">
             <h2 id="details" className="label">{t.details}</h2>
-            <dl className="specs" lang="en">
-              {product.details.map((d) => (
+            <dl className="specs" lang={copy.lang}>
+              {copy.details.map((d) => (
                 <div key={d.label}>
                   <dt>{d.label}</dt>
                   <dd>{d.value}</dd>

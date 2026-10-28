@@ -38,6 +38,13 @@ async function EditProduct({ params, searchParams }: PageProps<"/admin/products/
         images: Array.isArray(row.images) ? (row.images as ProductFormValues["images"]) : [],
         featured: row.featured,
         published: row.published,
+        name_id: row.name_id ?? "",
+        blurb_id: row.blurb_id ?? "",
+        description_id: row.description_id ?? "",
+        includes_id: row.includes_id ?? [],
+        details_id: Array.isArray(row.details_id) ? (row.details_id as ProductFormValues["details"]) : [],
+        price_usd: row.price_usd,
+        price_idr: row.price_idr,
       }
     : undefined;
 

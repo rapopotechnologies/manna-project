@@ -67,6 +67,15 @@ export async function getProducts(): Promise<ShopProduct[]> {
       pairsWith: r.pairs_with,
       etsyUrl: r.etsy_url,
       shopeeUrl: r.shopee_url ?? undefined,
+      id: {
+        name: r.name_id?.trim() || undefined,
+        blurb: r.blurb_id?.trim() || undefined,
+        description: r.description_id?.trim() || undefined,
+        includes: r.includes_id?.length ? r.includes_id : undefined,
+        details: asDetails(r.details_id).length ? asDetails(r.details_id) : undefined,
+      },
+      priceUsd: r.price_usd ?? undefined,
+      priceIdr: r.price_idr ?? undefined,
       images: asImages(r.images),
       featured: r.featured,
     })).filter((p) => p.images.length > 0);

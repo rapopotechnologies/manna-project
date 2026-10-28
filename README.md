@@ -33,6 +33,18 @@ Each reader gets the day's content at their own midnight (`src/lib/reader-day.ts
 
 The daily verse comes from an archive in Supabase (`daily_verses`). A database job (`pg_cron`, every hour at :05) fetches OurManna and saves the verse for that UTC date, skipping until OurManna has switched. Because OurManna publishes at about midnight UTC, readers ahead of UTC (Indonesia) get each new verse at about 7am local time. Admin traffic counts still use Pacific dates.
 
+## Tests
+
+```bash
+npm run build && npm test     # every page in both languages (phone + desktop), time zones, sharing, accessibility
+npm run test:unit             # just the pure logic (dates, languages, Bible references, prices)
+```
+
+Playwright, run against the production build. Locally it uses your installed Chrome. GitHub Actions
+(`.github/workflows/tests.yml`) runs lint, type-check, build and tests on every push; add the
+repository variables `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (both
+public) so the sign-in pages are tested too, otherwise those few tests are skipped.
+
 ## Old URLs (do not remove)
 
 `next.config.ts` permanently redirects every address from the 2023 static site, including the printed QR code:

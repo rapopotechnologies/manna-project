@@ -53,10 +53,21 @@ export async function saveProduct(_prev: FormState, formData: FormData): Promise
   if (!images || images.length === 0) return { error: "Add at least one photo." };
   if (images.some((i) => !i.alt)) return { error: "Describe every photo in a few words. Screen readers read this aloud." };
 
-  const details = lines(formData.get("details")).map((l) => {
-    const at = l.indexOf(":");
-    return at > 0 ? { label: l.slice(0, at).trim(), value: l.slice(at + 1).trim() } : { label: "Detail", value: l };
-  });
+  const toDetails = (v: FormDataEntryValue | null, fallbackLabel: string) =>
+    lines(v).map((l) => {
+      const at = l.indexOf(":");
+      return at > 0 ? { label: l.slice(0, at).trim(), value: l.slice(at + 1).trim() } : { label: fallbackLabel, value: l };
+    });
+  const details = toDetails(formData.get("details"), "Detail");
+
+  // Prices: "4.50" / "4,50" dollars; "45.000" / "45000" rupiah. Empty hides the price.
+  const usdRaw = String(formData.get("price_usd") ?? "").trim().replace(/^\$|^US\$/i, "").replace(",", ".");
+  const idrRaw = String(formData.get("price_idr") ?? "").trim().replace(/^Rp\s*/i, "").replace(/[.,\s]/g, "");
+  const priceUsd = usdRaw ? Number(usdRaw) : null;
+  const priceIdr = idrRaw ? Number(idrRaw) : null;
+  if (priceUsd !== null && !(Number.isFinite(priceUsd) && priceUsd >= 0 && priceUsd < 100000)) return { error: "The Etsy price should be a number of dollars, like 4.50." };
+  if (priceIdr !== null && !(Number.isInteger(priceIdr) && priceIdr >= 0)) return { error: "The Shopee price should be a whole number of rupiah, like 45000." };
+  const text = (k: string) => String(formData.get(k) ?? "").trim();
 
   const row = {
     slug,
@@ -72,6 +83,13 @@ export async function saveProduct(_prev: FormState, formData: FormData): Promise
     images,
     featured: formData.get("featured") === "on",
     published: formData.get("published") === "on",
+    name_id: text("name_id") || null,
+    blurb_id: text("blurb_id") || null,
+    description_id: text("description_id") || null,
+    includes_id: lines(formData.get("includes_id")),
+    details_id: toDetails(formData.get("details_id"), "Detail"),
+    price_usd: priceUsd === null ? null : Math.round(priceUsd * 100) / 100,
+    price_idr: priceIdr,
   };
 
   if (original) {

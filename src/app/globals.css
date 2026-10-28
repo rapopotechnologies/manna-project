@@ -1269,3 +1269,6 @@ a:hover { color: var(--gold-text); }
 .reminder-option b { display: block; }
 .reminder-option small { color: var(--ink-soft); font-size: var(--t-sm); }
 .reminder-options:disabled { opacity: 0.6; }
+
+/* Prices on product cards */
+.product-price { margin-top: auto; font-family: var(--f-label); font-weight: 700; font-size: var(--t-sm); letter-spacing: 0.04em; color: var(--ink); }

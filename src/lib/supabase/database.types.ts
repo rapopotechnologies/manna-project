@@ -79,6 +79,13 @@ export type Database = {
           pairs_with: string[];
           etsy_url: string;
           shopee_url: string | null;
+          name_id: string | null;
+          blurb_id: string | null;
+          description_id: string | null;
+          includes_id: string[];
+          details_id: Json;
+          price_usd: number | null;
+          price_idr: number | null;
           images: Json;
           featured: boolean;
           published: boolean;

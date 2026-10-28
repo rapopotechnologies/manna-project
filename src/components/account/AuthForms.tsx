@@ -116,7 +116,8 @@ export function AuthForms({ onSignedIn }: { onSignedIn: () => void }) {
         const { data, error } = await supabase.auth.signUp({
           email: cleanEmail,
           password,
-          options: { emailRedirectTo: callback(`${L("/account")}?welcome=1`), captchaToken },
+          // lang picks the language of Supabase's confirmation and reset emails (see supabase/templates).
+          options: { emailRedirectTo: callback(`${L("/account")}?welcome=1`), captchaToken, data: { lang } },
         });
         if (error) {
           setMessage({ kind: "error", text: error.status === 429 ? t.tooMany : error.message });
