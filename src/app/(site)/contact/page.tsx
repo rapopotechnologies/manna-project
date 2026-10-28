@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { CopyButton } from "@/components/CopyButton";
-import { CONTACT_EMAIL, ETSY_SHOP_URL, SUPPORT_EMAIL } from "@/data/products";
+import { CONTACT_EMAIL, ETSY_SHOP_URL, SHOPEE_SHOP_URL, SUPPORT_EMAIL } from "@/data/products";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -14,14 +14,15 @@ const faqs: { q: string; a: React.ReactNode }[] = [
     q: "Where do I buy your products?",
     a: (
       <>
-        Everything is sold through our <a href={ETSY_SHOP_URL} target="_blank" rel="noopener noreferrer">Etsy shop</a>.
-        Checkout happens securely on Etsy.
+        In Indonesia, through our <a href={SHOPEE_SHOP_URL} target="_blank" rel="noopener noreferrer">Shopee shop</a>. Everywhere
+        else, through our <a href={ETSY_SHOP_URL} target="_blank" rel="noopener noreferrer">Etsy shop</a>. Checkout happens securely on
+        their site.
       </>
     ),
   },
   {
     q: "Where are my downloads after I buy?",
-    a: "Your files are ready right after purchase. You’ll find them in your Etsy purchases and in the receipt email Etsy sends you.",
+    a: "Your files are ready right after purchase. You’ll find them in your purchases on Shopee or Etsy, and in the receipt they send you.",
   },
   {
     q: "Which apps work with the digital products?",
@@ -80,12 +81,13 @@ export default function ContactPage() {
           <span className="label">Orders</span>
           <h2 id="orders">Questions about a purchase or your account?</h2>
           <p>
-            Email <span className="selectable">{SUPPORT_EMAIL}</span>, or message us through Etsy so your order details come with your
-            question.
+            Email <span className="selectable">{SUPPORT_EMAIL}</span>, or message us through Shopee or Etsy so your order details come
+            with your question.
           </p>
-          <a className="btn btn-gold" href={ETSY_SHOP_URL} target="_blank" rel="noopener noreferrer">
-            Go to our Etsy shop ↗
-          </a>
+          <div className="band-buttons">
+            <a className="btn btn-gold" href={SHOPEE_SHOP_URL} target="_blank" rel="noopener noreferrer">Shopee (Indonesia) ↗</a>
+            <a className="btn btn-gold" href={ETSY_SHOP_URL} target="_blank" rel="noopener noreferrer">Etsy (worldwide) ↗</a>
+          </div>
         </section>
       </div>
 

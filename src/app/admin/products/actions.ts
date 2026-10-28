@@ -8,7 +8,7 @@ import { SUPABASE_URL } from "@/lib/supabase/env";
 
 export type FormState = { error?: string };
 
-const CATEGORIES = ["Journals", "Bookmarks", "Stickers"];
+const CATEGORIES = ["Journals", "Planners", "Bookmarks", "Stickers"];
 const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 
 const lines = (v: FormDataEntryValue | null) =>
@@ -46,6 +46,10 @@ export async function saveProduct(_prev: FormState, formData: FormData): Promise
   if (!SLUG.test(slug) || slug === "new") return { error: "The web address can only use lowercase letters, numbers and dashes, like bible-reading-tracker." };
   if (!CATEGORIES.includes(category)) return { error: "Choose a category." };
   if (!/^https:\/\/(www\.)?etsy\.com\//.test(etsyUrl)) return { error: "The Etsy link should start with https://www.etsy.com/." };
+  const shopeeUrl = String(formData.get("shopee_url") ?? "").trim();
+  if (shopeeUrl && !/^https:\/\/([a-z0-9-]+\.)*(shopee\.co\.id|shp\.ee)\//.test(shopeeUrl)) {
+    return { error: "The Shopee link should start with https://shopee.co.id/ or https://id.shp.ee/." };
+  }
   if (!images || images.length === 0) return { error: "Add at least one photo." };
   if (images.some((i) => !i.alt)) return { error: "Describe every photo in a few words. Screen readers read this aloud." };
 
@@ -64,6 +68,7 @@ export async function saveProduct(_prev: FormState, formData: FormData): Promise
     details,
     pairs_with: formData.getAll("pairs_with").map(String).filter((s) => s !== slug),
     etsy_url: etsyUrl,
+    shopee_url: shopeeUrl || null,
     images,
     featured: formData.get("featured") === "on",
     published: formData.get("published") === "on",

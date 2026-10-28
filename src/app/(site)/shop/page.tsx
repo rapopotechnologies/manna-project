@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { ProductCard } from "@/components/shop/ProductCard";
-import { CATEGORY_NOTES, CATEGORY_ORDER, ETSY_SHOP_URL } from "@/data/products";
+import { CATEGORY_NOTES, CATEGORY_ORDER, ETSY_SHOP_URL, SHOPEE_SHOP_URL } from "@/data/products";
 import { getProducts } from "@/lib/content";
 
 export const metadata: Metadata = {
@@ -24,7 +24,7 @@ export default async function ShopPage() {
         <h1>
           Made by hand, <span className="brush">for your quiet time</span>.
         </h1>
-        <p className="lede">Digital and printable tools for Bible reading and journaling. Every item is an instant download from our Etsy shop.</p>
+        <p className="lede">Digital and printable tools for Bible reading and journaling. Every item is an instant download from our Shopee shop (Indonesia) or Etsy shop (worldwide).</p>
         <nav className="jump" aria-label="Shop sections">
           {groups.map(({ category, items }) => (
             <a key={category} href={`#${category.toLowerCase()}`} className="jump-chip">
@@ -52,12 +52,17 @@ export default async function ShopPage() {
 
       <section className="etsy-band" aria-labelledby="etsy-band">
         <div>
-          <h2 id="etsy-band">Every purchase happens on Etsy</h2>
-          <p>Secure checkout, instant downloads, and your files stay in your Etsy account.</p>
+          <h2 id="etsy-band">Buy on Shopee or Etsy</h2>
+          <p>Shopee for buyers in Indonesia, Etsy everywhere else. Secure checkout and instant downloads on both.</p>
         </div>
-        <a className="btn btn-gold" href={ETSY_SHOP_URL} target="_blank" rel="noopener noreferrer">
-          Visit the Etsy shop ↗
-        </a>
+        <div className="band-buttons">
+          <a className="btn btn-gold" href={SHOPEE_SHOP_URL} target="_blank" rel="noopener noreferrer">
+            Shopee shop (Indonesia) ↗
+          </a>
+          <a className="btn btn-gold" href={ETSY_SHOP_URL} target="_blank" rel="noopener noreferrer">
+            Etsy shop (worldwide) ↗
+          </a>
+        </div>
       </section>
     </div>
   );

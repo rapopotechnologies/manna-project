@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { cacheLife } from "next/cache";
 import { CopyButton } from "@/components/CopyButton";
-import { CONTACT_EMAIL, ETSY_SHOP_URL } from "@/data/products";
+import { CONTACT_EMAIL, ETSY_SHOP_URL, SHOPEE_SHOP_URL } from "@/data/products";
 import { MOTTO } from "@/lib/site";
 
 async function CurrentYear() {
@@ -29,8 +29,11 @@ export function SiteFooter() {
           </div>
           <div>
             <p className="label">Shop</p>
+            <a href={SHOPEE_SHOP_URL} target="_blank" rel="noopener noreferrer">
+              Shopee (Indonesia) ↗
+            </a>
             <a href={ETSY_SHOP_URL} target="_blank" rel="noopener noreferrer">
-              Manna Project on Etsy ↗
+              Etsy (worldwide) ↗
             </a>
             <Link href="/support">Support Manna Project</Link>
           </div>

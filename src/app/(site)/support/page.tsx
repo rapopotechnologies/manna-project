@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { CONTACT_EMAIL, ETSY_SHOP_URL } from "@/data/products";
+import { CONTACT_EMAIL, ETSY_SHOP_URL, SHOPEE_SHOP_URL } from "@/data/products";
 
 export const metadata: Metadata = {
   title: "Support Manna Project",
@@ -56,11 +56,15 @@ export default function SupportPage() {
           <h2 id="other-ways">Other ways to help</h2>
         </div>
         <div className="doors">
-          <a className="door" href={ETSY_SHOP_URL} target="_blank" rel="noopener noreferrer">
+          <div className="door door-static">
             <span className="door-knob" aria-hidden="true" />
-            <b>Shop on Etsy ↗</b>
+            <b>Shop our products</b>
             <small>Every bookmark, tracker and sticker pack you buy supports the work.</small>
-          </a>
+            <span className="door-links">
+              <a href={SHOPEE_SHOP_URL} target="_blank" rel="noopener noreferrer">Shopee (Indonesia) ↗</a>
+              <a href={ETSY_SHOP_URL} target="_blank" rel="noopener noreferrer">Etsy (worldwide) ↗</a>
+            </span>
+          </div>
           <Link className="door" href="/daily">
             <span className="door-knob" aria-hidden="true" />
             <b>Share today’s verse</b>

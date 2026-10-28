@@ -15,6 +15,7 @@ export type ProductFormValues = {
   details: { label: string; value: string }[];
   pairs_with: string[];
   etsy_url: string;
+  shopee_url: string | null;
   images: ImageItem[];
   featured: boolean;
   published: boolean;
@@ -60,6 +61,7 @@ export function ProductForm({ product, others }: Props) {
             <span>Category</span>
             <select id="category" name="category" defaultValue={product?.category ?? "Journals"}>
               <option>Journals</option>
+              <option>Planners</option>
               <option>Bookmarks</option>
               <option>Stickers</option>
             </select>
@@ -82,6 +84,11 @@ export function ProductForm({ product, others }: Props) {
         <label className="field" htmlFor="etsy_url">
           <span>Etsy listing link</span>
           <input id="etsy_url" name="etsy_url" type="url" required defaultValue={product?.etsy_url} placeholder="https://www.etsy.com/listing/…" />
+        </label>
+        <label className="field" htmlFor="shopee_url">
+          <span>Shopee listing link (Indonesia)</span>
+          <input id="shopee_url" name="shopee_url" type="url" defaultValue={product?.shopee_url ?? ""} placeholder="https://shopee.co.id/… or https://id.shp.ee/…" />
+          <small>Optional. Leave empty to send Indonesian buyers to the Shopee shop.</small>
         </label>
         <div className="check-list">
           <label className="check"><input type="checkbox" name="published" defaultChecked={product?.published ?? true} /> Show in the shop</label>

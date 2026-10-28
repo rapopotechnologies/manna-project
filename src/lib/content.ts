@@ -20,7 +20,7 @@ export const CONTENT_TAGS = {
   kids: "content:kids",
 } as const;
 
-const CATEGORIES: ProductCategory[] = ["Journals", "Bookmarks", "Stickers"];
+const CATEGORIES: ProductCategory[] = ["Journals", "Planners", "Bookmarks", "Stickers"];
 
 export type ShopProduct = Product & { featured: boolean };
 
@@ -65,6 +65,7 @@ export async function getProducts(): Promise<ShopProduct[]> {
       details: asDetails(r.details),
       pairsWith: r.pairs_with,
       etsyUrl: r.etsy_url,
+      shopeeUrl: r.shopee_url ?? undefined,
       images: asImages(r.images),
       featured: r.featured,
     })).filter((p) => p.images.length > 0);

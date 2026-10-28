@@ -39,7 +39,12 @@ async function Overview() {
   }));
   const peak = Math.max(1, ...perDay.map((d) => d.count));
   const etsy = (products ?? [])
-    .map((p) => ({ ...p, clicks: rows.filter((r) => r.metric === "etsy_click" && r.key === p.slug).reduce((n, r) => n + r.count, 0) }))
+    .map((p) => ({
+      ...p,
+      etsyClicks: rows.filter((r) => r.metric === "etsy_click" && r.key === p.slug).reduce((n, r) => n + r.count, 0),
+      shopeeClicks: rows.filter((r) => r.metric === "shopee_click" && r.key === p.slug).reduce((n, r) => n + r.count, 0),
+    }))
+    .map((p) => ({ ...p, clicks: p.etsyClicks + p.shopeeClicks }))
     .sort((a, b) => b.clicks - a.clicks);
 
   return (
@@ -65,7 +70,11 @@ async function Overview() {
           </span>
         </div>
         <div className="stat"><b>{total("ig_share") + total("link_share")}</b><span>Shares</span></div>
-        <div className="stat"><b>{total("etsy_click")}</b><span>Clicks to Etsy</span></div>
+        <div className="stat">
+          <b>{total("etsy_click") + total("shopee_click")}</b>
+          <span>Clicks to the shops</span>
+          <span className="stat-split">Shopee {total("shopee_click")} · Etsy {total("etsy_click")}</span>
+        </div>
       </div>
 
       <div className="panel-grid">
@@ -86,14 +95,16 @@ async function Overview() {
         </section>
 
         <section className="panel" aria-labelledby="etsy">
-          <h2 id="etsy">Etsy clicks by product</h2>
+          <h2 id="etsy">Shop clicks by product</h2>
           <div className="table-scroll">
             <table className="admin-table">
               <tbody>
                 {etsy.map((p) => (
                   <tr key={p.slug}>
                     <td><Link href={`/admin/products/${p.slug}`}>{p.name}</Link></td>
-                    <td className="num">{p.clicks}</td>
+                    <td className="num" title={`Shopee ${p.shopeeClicks} · Etsy ${p.etsyClicks}`}>
+                      {p.clicks} <span className="muted" style={{ fontSize: "0.75rem" }}>({p.shopeeClicks} Shopee · {p.etsyClicks} Etsy)</span>
+                    </td>
                   </tr>
                 ))}
               </tbody>
