@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { AccountInvite } from "@/components/account/AccountInvite";
 import { BOOKS } from "@/data/bible-books";
+import { dayKeyFor } from "@/lib/day";
+import { mannaForDay } from "@/lib/hidden-manna";
 import { useProgress, weekView } from "@/lib/progress";
 import { Bookshelf } from "./Bookshelf";
 import { Garden } from "./Garden";
@@ -17,6 +19,15 @@ export function MyManna({ today }: { today: string }) {
   const week = weekView(today, progress.gathered);
   const shelfCount = BOOKS.filter((b) => progress.books[b.name]).length;
   const isNew = progress.gathered.length === 0;
+  // Same clock as the falling pieces (the reader's device), so the two always agree.
+  const mannaDay = dayKeyFor(new Date());
+  const hidden = mannaForDay(mannaDay);
+  const foundToday = (progress.manna[mannaDay] ?? []).length;
+  const hiddenTotal = Object.values(progress.manna).reduce((n, ids) => n + ids.length, 0);
+  const fullDays = Object.entries(progress.manna).filter(([day, ids]) => {
+    const n = mannaForDay(day).pieces.length;
+    return n > 0 && ids.length >= n;
+  }).length;
 
   return (
     <div className="my-manna">
@@ -48,6 +59,35 @@ export function MyManna({ today }: { today: string }) {
             </p>
           </div>
         </div>
+      </section>
+
+      <section className="progress-card hidden-manna-card" aria-labelledby="hidden-title">
+        <div className="progress-head">
+          <span className="label">Hidden manna</span>
+          <h2 id="hidden-title">
+            {hidden.sabbath ? "Sabbath rest" : `${foundToday} of ${hidden.pieces.length} gathered today`}
+          </h2>
+        </div>
+        {hidden.sabbath ? (
+          <p className="muted-line">No manna falls today. Rest, and come back tomorrow morning (Exodus 16:26).</p>
+        ) : (
+          <>
+            <div className="manna-dots" aria-hidden="true">
+              {hidden.pieces.map((p) => (
+                <i key={p.id} className={(progress.manna[mannaDay] ?? []).includes(p.id) ? "on" : undefined} />
+              ))}
+            </div>
+            <p className="muted-line">
+              {foundToday >= hidden.pieces.length
+                ? "You found them all today. New manna falls tomorrow morning."
+                : `${hidden.double ? "It’s the sixth day, so twice as much fell today. " : ""}Look along the edges of the pages around the site. Gather it today: like the manna in the wilderness, it doesn’t keep overnight.`}
+            </p>
+          </>
+        )}
+        <p className="muted-line">
+          {hiddenTotal} gathered in all{fullDays ? ` · ${fullDays} ${fullDays === 1 ? "day" : "days"} with every piece found` : ""}
+        </p>
+        <p className="hand hidden-verse">“To the one who conquers I will give some of the hidden manna.” Revelation 2:17</p>
       </section>
 
       <section className="progress-card" aria-labelledby="shelf-title">

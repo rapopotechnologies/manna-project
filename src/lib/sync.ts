@@ -67,6 +67,7 @@ function asReaderData(row: { progress: Json; reflections: Json; found: string[] 
       books: p.books && typeof p.books === "object" ? p.books : {},
       reflections: Array.isArray(p.reflections) ? p.reflections : [],
       kidsStickers: Array.isArray(p.kidsStickers) ? p.kidsStickers : [],
+      manna: p.manna && typeof p.manna === "object" ? p.manna : {},
     },
     reflections: (row?.reflections && typeof row.reflections === "object" ? row.reflections : {}) as Record<string, Notes>,
     found: row?.found ?? [],
@@ -79,6 +80,10 @@ export function merge(a: ReaderData, b: ReaderData): ReaderData {
   for (const [book, day] of Object.entries(a.progress.books)) {
     books[book] = books[book] && books[book] < day ? books[book] : day;
   }
+  const manna: Record<string, number[]> = { ...b.progress.manna };
+  for (const [day, ids] of Object.entries(a.progress.manna ?? {})) {
+    manna[day] = Array.from(new Set([...(manna[day] ?? []), ...ids])).sort((x, y) => x - y);
+  }
   const reflections: Record<string, Notes> = { ...b.reflections };
   for (const [day, notes] of Object.entries(a.reflections)) {
     if (!reflections[day] || textLength(notes) >= textLength(reflections[day])) reflections[day] = notes;
@@ -89,6 +94,7 @@ export function merge(a: ReaderData, b: ReaderData): ReaderData {
       books,
       reflections: union(a.progress.reflections, b.progress.reflections),
       kidsStickers: union(a.progress.kidsStickers, b.progress.kidsStickers),
+      manna,
     },
     reflections,
     found: union(a.found, b.found),

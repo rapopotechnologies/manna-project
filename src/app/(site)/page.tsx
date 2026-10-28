@@ -142,7 +142,7 @@ export default async function HomePage() {
           </div>
         </div>
         <p className="hidden-hint hand">
-          Psst: ten verses are tucked away around Manna Project. Keep an eye out.
+          Psst: ten verses are tucked away around Manna Project, and a little hidden manna falls on the site every morning. Keep an eye out.
         </p>
       </section>
     </div>

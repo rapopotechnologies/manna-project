@@ -23,14 +23,16 @@ async function Overview() {
   const today = dayKeyFor(new Date());
   const days = Array.from({ length: 7 }, (_, i) => shiftDayKey(today, i - 6));
 
-  const [{ data: counts }, { data: products }, { data: changes }, { count: waiting }] = await Promise.all([
+  const [{ data: counts }, { data: products }, { data: changes }, { data: readers }] = await Promise.all([
     supabase.from("daily_counts").select("day, metric, key, count").gte("day", days[0]),
     supabase.from("products").select("slug, name").order("sort_order"),
     supabase.from("change_log").select("id, at, actor, action, target_table, target_id").order("at", { ascending: false }).limit(6),
-    supabase.from("readers").select("user_id", { count: "exact", head: true }).eq("status", "pending"),
+    // Same list as the Readers page (team members excluded), so the two always agree.
+    supabase.rpc("admin_reader_details", { search: "" }),
   ]);
 
   const rows = counts ?? [];
+  const waiting = (readers ?? []).filter((r) => r.status === "pending").length;
   const scans = (key: string) => rows.filter((r) => r.metric === "qr_scan" && r.key === key).reduce((n, r) => n + r.count, 0);
   const total = (metric: string) => rows.filter((r) => r.metric === metric).reduce((n, r) => n + r.count, 0);
   const perDay = days.map((d) => ({
@@ -54,7 +56,7 @@ async function Overview() {
       intro="Totals from the last 7 days, counted privately: no cookies and no personal data."
       actions={<a className="btn" href={VERCEL_ANALYTICS} target="_blank" rel="noopener noreferrer">Full analytics on Vercel ↗</a>}
     >
-      {(waiting ?? 0) > 0 && (
+      {waiting > 0 && (
         <Link href="/admin/readers" className="notice notice-warn waiting-link">
           {waiting} new {waiting === 1 ? "reader is" : "readers are"} waiting for approval →
         </Link>
