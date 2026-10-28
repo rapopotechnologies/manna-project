@@ -15,11 +15,13 @@ export type Progress = {
   reflections: string[];
   /** Day keys when the family talked through the kids' question. */
   kidsStickers: string[];
+  /** Hidden manna gathered: day key → piece ids found that day. */
+  manna: Record<string, number[]>;
 };
 
 const KEY = "manna:progress";
 const EVENT = "manna:progress";
-const EMPTY: Progress = { gathered: [], books: {}, reflections: [], kidsStickers: [] };
+const EMPTY: Progress = { gathered: [], books: {}, reflections: [], kidsStickers: [], manna: {} };
 
 let cache: Progress | null = null;
 let cacheRaw: string | null = null;
@@ -35,6 +37,7 @@ function read(): Progress {
       books: parsed.books && typeof parsed.books === "object" ? parsed.books : {},
       reflections: Array.isArray(parsed.reflections) ? parsed.reflections : [],
       kidsStickers: Array.isArray(parsed.kidsStickers) ? parsed.kidsStickers : [],
+      manna: parsed.manna && typeof parsed.manna === "object" ? parsed.manna : {},
     };
     return cache;
   } catch {
@@ -80,6 +83,16 @@ export function plantReflection(day: string): boolean {
   if (p.reflections.includes(day)) return false;
   write({ ...p, reflections: addDay(p.reflections, day) });
   return true;
+}
+
+/** Records a piece of hidden manna. Returns how many were gathered that day, or 0 if it was already gathered. */
+export function gatherHiddenManna(day: string, id: number): number {
+  const p = read();
+  const today = p.manna[day] ?? [];
+  if (today.includes(id)) return 0;
+  const next = [...today, id].sort((a, b) => a - b);
+  write({ ...p, manna: { ...p.manna, [day]: next } });
+  return next.length;
 }
 
 export function addKidsSticker(day: string): boolean {
