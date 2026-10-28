@@ -31,6 +31,7 @@ async function Overview() {
   ]);
 
   const rows = counts ?? [];
+  const scans = (key: string) => rows.filter((r) => r.metric === "qr_scan" && r.key === key).reduce((n, r) => n + r.count, 0);
   const total = (metric: string) => rows.filter((r) => r.metric === metric).reduce((n, r) => n + r.count, 0);
   const perDay = days.map((d) => ({
     day: d,
@@ -56,7 +57,13 @@ async function Overview() {
 
       <div className="stat-row">
         <div className="stat"><b>{total("verse_view")}</b><span>Verse page visits</span></div>
-        <div className="stat"><b>{total("qr_scan")}</b><span>QR code scans</span></div>
+        <div className="stat">
+          <b>{total("qr_scan")}</b>
+          <span>QR code scans</span>
+          <span className="stat-split">
+            Verse {scans("daily") + scans("")} · Kids {scans("kids")} · Hidden {rows.filter((r) => r.metric === "qr_scan" && r.key.startsWith("found:")).reduce((n, r) => n + r.count, 0)}
+          </span>
+        </div>
         <div className="stat"><b>{total("ig_share") + total("link_share")}</b><span>Shares</span></div>
         <div className="stat"><b>{total("etsy_click")}</b><span>Clicks to Etsy</span></div>
       </div>
