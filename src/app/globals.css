@@ -966,7 +966,8 @@ a:hover { color: var(--gold-text); }
    Phases 6–7 · Pantry, library, garden, sticker chart
    ========================================================================== */
 .jar { display: block; flex-shrink: 0; max-width: 100%; height: auto; }
-.manna-drop { animation: manna-drop 0.9s cubic-bezier(0.3, 1.3, 0.5, 1) both; transform-box: fill-box; }
+/* On a <g> around the piece, so the drop never touches the piece's own rotation. */
+.manna-drop { animation: manna-drop 0.9s cubic-bezier(0.3, 1.3, 0.5, 1) both; }
 @keyframes manna-drop {
   from { translate: 0 -110px; opacity: 0; }
   60% { opacity: 1; }
