@@ -1211,8 +1211,61 @@ a:hover { color: var(--gold-text); }
 .verse-tb { position: relative; margin: var(--s-3) 0 var(--s-5); max-width: 60ch; font-size: var(--t-sm); line-height: 1.5; color: var(--sky-ink, var(--ink-soft)); }
 .verse-tb a { color: inherit; font-weight: 600; }
 .verse-tb p { margin: 0 0 var(--s-2); }
-.verse-niv summary { cursor: pointer; font-weight: 600; text-decoration: underline; text-decoration-color: var(--gold); text-underline-offset: 3px; margin-bottom: var(--s-2); }
+.verse-niv summary { cursor: pointer; display: inline-flex; align-items: center; gap: 6px; min-height: 34px; font-family: var(--f-label); font-weight: 700; font-size: 0.66rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--sky-soft); list-style: none; }
+.verse-niv summary::-webkit-details-marker { display: none; }
+.verse-niv summary::after { content: "▾"; font-size: 0.9em; }
+.verse-niv[open] summary::after { content: "▴"; }
+.verse-niv summary:hover { color: var(--sky-ink); }
 .verse-niv p { font-style: italic; }
 .verse-niv-ref { font-style: normal; font-size: 0.85em; white-space: nowrap; }
-.verse-credit { margin: var(--s-3) 0 0; font-size: 0.75rem; line-height: 1.5; color: var(--sky-ink, var(--ink-soft)); opacity: 0.8; }
+.verse-credit { margin: var(--s-3) 0 0; font-size: 0.7rem; line-height: 1.5; color: var(--sky-ink, var(--ink-soft)); opacity: 0.8; }
 .verse-credit a { color: inherit; }
+
+/* Daily verse: one quiet row under the verse; sharing opens a tray */
+.verse-quiet { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2) var(--s-5); }
+.window .share-toggle { gap: 6px; background: transparent; }
+.window .share-toggle[aria-expanded="true"] { background: var(--sky-ink); border-color: var(--sky-ink); color: var(--sky-2); }
+.quiet-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  font-family: var(--f-label);
+  font-weight: 700;
+  font-size: 0.66rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--sky-soft);
+  text-decoration: none;
+}
+.quiet-link:hover { color: var(--sky-ink); text-decoration: underline; text-underline-offset: 4px; }
+.share-tray { margin-top: var(--s-3); padding: var(--s-3); border: 1px dashed var(--sky-line); border-radius: 18px; animation: tray-in 0.2s ease-out; }
+.share-tray[hidden] { display: none; }
+.window .share-tray .btn { min-height: 40px; font-size: 0.66rem; padding-inline: var(--s-3); }
+/* In the tray every option looks the same; the brand shows only in the icon. */
+.window .share-tray .btn-instagram,
+.window .share-tray .btn-wa { background: transparent; border-color: var(--sky-line); color: var(--sky-ink); }
+.window .share-tray .btn-instagram:hover,
+.window .share-tray .btn-wa:hover { background: transparent; border-color: var(--sky-ink); color: var(--sky-ink); }
+.window .share-tray .btn-wa svg { color: #1ea952; }
+@keyframes tray-in { from { opacity: 0; transform: translateY(-4px); } }
+@media (prefers-reduced-motion: reduce) { .share-tray { animation: none; } }
+@media (max-width: 560px) {
+  .share-tray .btn-instagram { flex-basis: calc(50% - var(--s-2)); min-height: 40px; }
+}
+
+/* Privacy & terms */
+.legal { max-width: 44rem; margin-top: var(--s-6); }
+.legal section { padding-block: var(--s-5); border-top: 1px dashed var(--line); scroll-margin-top: var(--s-6); }
+.legal h2 { font-size: clamp(1.3rem, 1.1rem + 0.8vw, 1.7rem); margin-bottom: var(--s-3); }
+.legal p, .legal li { line-height: 1.65; }
+.legal ul { padding-left: 1.2em; display: grid; gap: var(--s-2); }
+.auth-fine { margin-top: var(--s-3); font-size: var(--t-sm); color: var(--ink-soft); }
+
+/* Morning reminder choice */
+.reminder-options { border: 0; padding: 0; margin: 0; display: grid; gap: var(--s-2); }
+.reminder-option { display: flex; gap: var(--s-3); align-items: flex-start; padding: var(--s-3) var(--s-4); border: 1.5px solid var(--line); border-radius: 14px; cursor: pointer; }
+.reminder-option.is-on { border-color: var(--gold); background: var(--chip); }
+.reminder-option input { margin-top: 4px; accent-color: var(--gold); }
+.reminder-option b { display: block; }
+.reminder-option small { color: var(--ink-soft); font-size: var(--t-sm); }
+.reminder-options:disabled { opacity: 0.6; }

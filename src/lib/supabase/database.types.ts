@@ -53,6 +53,19 @@ export type Database = {
         "user_id"
       >;
       daily_verses: Table<{ day: string; text: string; reference: string; version: string; fetched_at: string }, "day" | "text" | "reference">;
+      reminders: Table<
+        {
+          user_id: string;
+          mode: "daily" | "away";
+          lang: "en" | "id";
+          time_zone: string;
+          last_seen: string | null;
+          last_sent_on: string | null;
+          created_at: string;
+          updated_at: string;
+        },
+        "user_id" | "mode"
+      >;
       kids_questions: Table<{ id: number; position: number; question: string; question_id: string | null; updated_at: string }, "position" | "question">;
       products: Table<
         {

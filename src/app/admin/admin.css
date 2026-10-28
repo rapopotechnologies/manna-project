@@ -187,3 +187,12 @@
   .reader-search input { width: 100%; }
   .reader-search { width: 100%; }
 }
+
+/* QR codes */
+.qr-langs { border: 0; padding: 0; margin: 0; gap: 6px; }
+.qr-langs label, .qr-check { display: flex; align-items: center; gap: 8px; font-size: 0.95rem; }
+.qr-preview { display: grid; place-items: center; min-height: 260px; background: #fff; border: 1px solid var(--line); border-radius: 14px; }
+.qr-preview img { width: 240px; height: 240px; image-rendering: pixelated; }
+.qr-url { font-family: ui-monospace, monospace; font-size: 0.85rem; word-break: break-all; color: var(--ink-soft); }
+.qr-actions { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+@media (max-width: 860px) { .qr-maker { grid-template-columns: minmax(0, 1fr); } }

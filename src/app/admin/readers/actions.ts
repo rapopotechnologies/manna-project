@@ -4,7 +4,8 @@ import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/admin/auth";
-import { sendApprovedEmail } from "@/lib/email";
+import { canSendEmail, sendApprovedEmail, sendResetEmail } from "@/lib/email";
+import { createServiceClient, hasServiceKey } from "@/lib/supabase/admin";
 
 /** Back to the readers list, keeping the current tab and search, with a short notice. */
 function back(formData: FormData, notice?: string): never {
@@ -65,8 +66,20 @@ export async function sendPasswordReset(formData: FormData) {
   const h = await headers();
   const host = h.get("x-forwarded-host") ?? h.get("host") ?? "bymannaproject.com";
   const proto = h.get("x-forwarded-proto") ?? (host.startsWith("localhost") ? "http" : "https");
+  const origin = `${proto}://${host}`;
+
+  // Preferred: make the link with the secret key and send it ourselves. This works even when
+  // sign-in forms require the Turnstile check, which a server action can't complete.
+  if (hasServiceKey() && canSendEmail()) {
+    const { data, error } = await createServiceClient().auth.admin.generateLink({ type: "recovery", email: reader!.email });
+    const tokenHash = data?.properties?.hashed_token;
+    if (error || !tokenHash) back(formData, "reset-failed");
+    const link = `${origin}/auth/confirm?${new URLSearchParams({ token_hash: tokenHash!, type: "recovery", next: "/account/reset" })}`;
+    back(formData, (await sendResetEmail(reader!.email, link)) ? "reset-sent" : "reset-failed");
+  }
+
   const { error } = await supabase.auth.resetPasswordForEmail(reader!.email, {
-    redirectTo: `${proto}://${host}/auth/callback?next=/account/reset`,
+    redirectTo: `${origin}/auth/callback?next=/account/reset`,
   });
   back(formData, error ? "reset-failed" : "reset-sent");
 }

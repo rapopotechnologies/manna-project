@@ -68,7 +68,11 @@ async function Overview() {
           <b>{total("qr_scan")}</b>
           <span>QR code scans</span>
           <span className="stat-split">
-            Verse {scans("daily") + scans("")} · Kids {scans("kids")} · Hidden {rows.filter((r) => r.metric === "qr_scan" && r.key.startsWith("found:")).reduce((n, r) => n + r.count, 0)}
+            Verse {scans("daily") + scans("")} · Kids {scans("kids")} · Hidden{" "}
+            {rows.filter((r) => r.metric === "qr_scan" && r.key.startsWith("found:")).reduce((n, r) => n + r.count, 0)} · Other{" "}
+            {rows
+              .filter((r) => r.metric === "qr_scan" && !["daily", "", "kids"].includes(r.key) && !r.key.startsWith("found:"))
+              .reduce((n, r) => n + r.count, 0)}
           </span>
         </div>
         <div className="stat"><b>{total("ig_share") + total("link_share") + total("wa_share")}</b><span>Shares</span></div>

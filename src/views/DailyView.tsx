@@ -117,16 +117,11 @@ export async function DailyView({ lang }: { lang: Lang }) {
                 <div className="verse-tb">
                   {showsTsi ? (
                     <details className="verse-niv">
-                      <summary>Lihat dalam bahasa Inggris (NIV)</summary>
+                      <summary>Versi bahasa Inggris (NIV)</summary>
                       <p lang="en">“{verse.text}” <span className="verse-niv-ref">{verse.reference} · {verse.version}</span></p>
                     </details>
                   ) : (
                     <p>Ayat ini dalam bahasa Inggris (NIV).</p>
-                  )}
-                  {tb && (
-                    <p>
-                      <a href={tb} target="_blank" rel="noopener noreferrer">Baca juga dalam Terjemahan Baru ↗</a>
-                    </p>
                   )}
                 </div>
               )}
@@ -139,6 +134,7 @@ export async function DailyView({ lang }: { lang: Lang }) {
                 chapterHref={(showsTsi && tsiChapterUrl(verse.reference)) || chapterUrl(verse.reference, verse.version)}
                 cardHref="/daily/card"
                 shareUrl={`${SITE_URL}${L("/daily")}`}
+                links={tb ? [{ href: tb, label: "Terjemahan Baru ↗" }] : []}
               />
 
               <div className="window-foot">

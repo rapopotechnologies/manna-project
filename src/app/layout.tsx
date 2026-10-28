@@ -1,8 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Bricolage_Grotesque, Caveat, Literata, Montserrat } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
-import { Suspense } from "react";
-import { GoogleAnalytics } from "@/components/GoogleAnalytics";
 import { langScript } from "@/i18n/lang";
 import { readerDayScript } from "@/lib/reader-day";
 import { MOTTO, SITE_NAME, SITE_URL } from "@/lib/site";
@@ -47,9 +45,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body>
         {children}
         <Analytics />
-        <Suspense fallback={null}>
-          <GoogleAnalytics />
-        </Suspense>
       </body>
     </html>
   );

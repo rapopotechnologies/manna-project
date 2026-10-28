@@ -9,6 +9,7 @@ const links = [
   { href: "/admin/verses", label: "Hidden verses" },
   { href: "/admin/kids", label: "Kids questions" },
   { href: "/admin/readers", label: "Readers" },
+  { href: "/admin/qr", label: "QR codes" },
   { href: "/admin/history", label: "Change history" },
 ];
 

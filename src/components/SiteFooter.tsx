@@ -27,6 +27,7 @@ const T = {
     account: "Your account",
     contact: "Contact & FAQ",
     powered: "Daily verse powered by",
+    privacy: "Privacy & terms",
   },
   id: {
     hello: "Sapa kami",
@@ -43,6 +44,7 @@ const T = {
     account: "Akunmu",
     contact: "Kontak & Tanya jawab",
     powered: "Ayat harian dari",
+    privacy: "Privasi & ketentuan",
   },
 };
 
@@ -85,7 +87,8 @@ export function SiteFooter({ lang }: { lang: Lang }) {
 
         <p className="footer-legal">
           © <CurrentYear /> Manna Project. {t.powered}{" "}
-          <a href="https://www.ourmanna.com/" target="_blank" rel="noopener noreferrer">OurManna.com</a>.
+          <a href="https://www.ourmanna.com/" target="_blank" rel="noopener noreferrer">OurManna.com</a>. ·{" "}
+          <Link href={L("/privacy")}>{t.privacy}</Link>
         </p>
       </div>
     </footer>

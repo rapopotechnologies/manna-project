@@ -1,6 +1,7 @@
 // Keeps a signed-in reader's device and account in step.
 // Loaded only when a sign-in cookie exists, so anonymous visitors never download it.
 
+import { localDayKey } from "@/lib/reader-day";
 import type { Json } from "@/lib/supabase/database.types";
 import { createClient } from "@/lib/supabase/browser";
 import { readProgress, replaceProgress, type Progress } from "@/lib/progress";
@@ -136,6 +137,7 @@ export async function startSync(): Promise<void> {
     return;
   }
   started = true;
+  void markSeen(user.id);
 
   setStatus({ state: "syncing" });
   const { data: row, error } = await supabase.from("reader_data").select("progress, reflections, found").eq("user_id", user.id).maybeSingle();
@@ -153,6 +155,27 @@ export async function startSync(): Promise<void> {
   };
   window.addEventListener("manna:progress", schedule);
   window.addEventListener("manna:local-change", schedule);
+}
+
+/**
+ * Records today's visit (the reader's own date) on their reminder, if they have one, so
+ * "only when I've been away" knows when they were last here. Once a day per device.
+ */
+async function markSeen(userId: string) {
+  const today = localDayKey();
+  try {
+    if (localStorage.getItem("manna:seen") === today) return;
+  } catch {}
+  let zone = "Asia/Jakarta";
+  try {
+    zone = Intl.DateTimeFormat().resolvedOptions().timeZone || zone;
+  } catch {}
+  const { error } = await createClient().from("reminders").update({ last_seen: today, time_zone: zone }).eq("user_id", userId);
+  if (!error) {
+    try {
+      localStorage.setItem("manna:seen", today);
+    } catch {}
+  }
 }
 
 export function stopSync() {

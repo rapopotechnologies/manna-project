@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useLang } from "@/i18n/client";
 import { localPath } from "@/i18n/lang";
 import { createClient } from "@/lib/supabase/browser";
+import { Turnstile, TURNSTILE_SITE_KEY } from "./Turnstile";
 
 type Mode = "sign-in" | "sign-up" | "forgot";
 const MIN = 8;
@@ -34,6 +35,9 @@ const T = {
     sendAgain: "Send it again",
     back: "Back to sign in",
     forgot: "Forgot your password?",
+    human: "Please finish the quick check above first.",
+    agree: "By creating an account you agree to our",
+    privacy: "privacy & terms",
   },
   id: {
     confirmFirst: "Konfirmasi emailmu dulu. Buka tautan yang kami kirim.",
@@ -57,6 +61,9 @@ const T = {
     sendAgain: "Kirim lagi",
     back: "Kembali ke halaman masuk",
     forgot: "Lupa kata sandi?",
+    human: "Selesaikan dulu pemeriksaan singkat di atas.",
+    agree: "Dengan membuat akun, kamu menyetujui",
+    privacy: "privasi & ketentuan",
   },
 };
 
@@ -71,15 +78,26 @@ export function AuthForms({ onSignedIn }: { onSignedIn: () => void }) {
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<{ kind: "ok" | "error"; text: string; resend?: boolean } | null>(null);
 
+  // Cloudflare Turnstile: each token works once, so get a fresh one after every attempt.
+  const [captcha, setCaptcha] = useState<string | null>(null);
+  const [captchaRound, setCaptchaRound] = useState(0);
+  const captchaToken = captcha ?? undefined;
+  const needsCaptcha = Boolean(TURNSTILE_SITE_KEY);
+  const nextCaptcha = () => setCaptchaRound((n) => n + 1);
+
   async function submit(e: React.FormEvent) {
     e.preventDefault();
+    if (needsCaptcha && !captcha) {
+      setMessage({ kind: "error", text: t.human });
+      return;
+    }
     setBusy(true);
     setMessage(null);
     const supabase = createClient();
     const cleanEmail = email.trim().toLowerCase();
     try {
       if (mode === "sign-in") {
-        const { error } = await supabase.auth.signInWithPassword({ email: cleanEmail, password });
+        const { error } = await supabase.auth.signInWithPassword({ email: cleanEmail, password, options: { captchaToken } });
         if (error) {
           const unconfirmed = /confirm/i.test(error.message);
           setMessage({
@@ -98,7 +116,7 @@ export function AuthForms({ onSignedIn }: { onSignedIn: () => void }) {
         const { data, error } = await supabase.auth.signUp({
           email: cleanEmail,
           password,
-          options: { emailRedirectTo: callback(`${L("/account")}?welcome=1`) },
+          options: { emailRedirectTo: callback(`${L("/account")}?welcome=1`), captchaToken },
         });
         if (error) {
           setMessage({ kind: "error", text: error.status === 429 ? t.tooMany : error.message });
@@ -111,20 +129,30 @@ export function AuthForms({ onSignedIn }: { onSignedIn: () => void }) {
           });
         }
       } else {
-        const { error } = await supabase.auth.resetPasswordForEmail(cleanEmail, { redirectTo: callback(L("/account/reset")) });
+        const { error } = await supabase.auth.resetPasswordForEmail(cleanEmail, { redirectTo: callback(L("/account/reset")), captchaToken });
         setMessage(
           error && error.status === 429 ? { kind: "error", text: t.tooMany } : { kind: "ok", text: t.resetSent(cleanEmail) },
         );
       }
     } finally {
       setBusy(false);
+      if (needsCaptcha) nextCaptcha();
     }
   }
 
   async function resend() {
+    if (needsCaptcha && !captcha) {
+      setMessage({ kind: "error", text: t.human });
+      return;
+    }
     setBusy(true);
-    await createClient().auth.resend({ type: "signup", email: email.trim().toLowerCase(), options: { emailRedirectTo: callback(`${L("/account")}?welcome=1`) } });
+    await createClient().auth.resend({
+      type: "signup",
+      email: email.trim().toLowerCase(),
+      options: { emailRedirectTo: callback(`${L("/account")}?welcome=1`), captchaToken },
+    });
     setBusy(false);
+    if (needsCaptcha) nextCaptcha();
     setMessage({ kind: "ok", text: t.resent });
   }
 
@@ -173,10 +201,17 @@ export function AuthForms({ onSignedIn }: { onSignedIn: () => void }) {
             {mode === "sign-up" && <small>{t.min(MIN)}</small>}
           </label>
         )}
+        <Turnstile onToken={setCaptcha} resetKey={captchaRound} />
         <button type="submit" className="btn btn-primary" disabled={busy}>
           {busy ? t.wait : mode === "sign-in" ? t.signIn : mode === "sign-up" ? t.create : t.sendReset}
         </button>
       </form>
+
+      {mode === "sign-up" && (
+        <p className="auth-fine">
+          {t.agree} <a href={L("/privacy")}>{t.privacy}</a>.
+        </p>
+      )}
 
       {message && (
         <p className={`auth-message ${message.kind}`} role={message.kind === "error" ? "alert" : "status"}>

@@ -8,8 +8,9 @@ import { createClient } from "@/lib/supabase/browser";
 import { useProgress } from "@/lib/progress";
 import { getSyncStatus, readLocal, startSync, stopSync, SYNC_EVENT, type SyncStatus } from "@/lib/sync";
 import { AuthForms } from "./AuthForms";
+import { ReminderSettings } from "./ReminderSettings";
 
-type User = { email: string };
+type User = { id: string; email: string };
 
 const T = {
   en: {
@@ -100,7 +101,7 @@ export function AccountPanel({ notice }: { notice?: "welcome" | "link" | "reset"
 
   const load = useCallback(async () => {
     const { data } = await createClient().auth.getUser();
-    setUser(data.user?.email ? { email: data.user.email } : null);
+    setUser(data.user?.email ? { id: data.user.id, email: data.user.email } : null);
     if (data.user) await startSync();
   }, []);
 
@@ -211,6 +212,8 @@ export function AccountPanel({ notice }: { notice?: "welcome" | "link" | "reset"
           <button type="button" className="btn" onClick={signOut}>{t.signOut}</button>
         </div>
       </section>
+
+      {sync.state !== "pending" && sync.state !== "declined" && <ReminderSettings userId={user.id} email={user.email} />}
 
       <section className="progress-card" aria-labelledby="delete">
         <h2 id="delete" className="account-small-head">{t.deleteTitle}</h2>

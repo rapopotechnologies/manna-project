@@ -11,13 +11,16 @@ export async function signIn(_prev: LoginState, formData: FormData): Promise<Log
   if (!email || !password) return { error: "Enter your email and password." };
 
   const supabase = await createClient();
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  const captchaToken = String(formData.get("captchaToken") ?? "") || undefined;
+  const { error } = await supabase.auth.signInWithPassword({ email, password, options: { captchaToken } });
   if (error) {
     return {
       error:
         error.status === 429
           ? "Too many attempts. Wait a few minutes and try again."
-          : "That email and password don’t match. If you’ve forgotten your password, ask the superadmin to reset it.",
+          : /captcha/i.test(error.message)
+            ? "Please finish the quick “are you human” check, then sign in."
+            : "That email and password don’t match. If you’ve forgotten your password, ask the superadmin to reset it.",
     };
   }
   redirect("/admin");

@@ -1,6 +1,7 @@
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { HiddenManna } from "@/components/progress/HiddenManna";
+import { QrScan } from "@/components/QrScan";
 import { pick, type Lang } from "@/i18n/lang";
 
 /** The public site's header ("the hallway") and footer around every room, in one language. */
@@ -14,6 +15,7 @@ export function SiteChrome({ lang, children }: { lang: Lang; children: React.Rea
         <HiddenManna />
       </main>
       <SiteFooter lang={lang} />
+      <QrScan />
     </>
   );
 }
