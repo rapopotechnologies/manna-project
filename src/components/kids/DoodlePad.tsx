@@ -3,6 +3,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { buildDrawingCard } from "@/lib/drawing-card";
 import { useLang } from "@/i18n/client";
+import { localPath } from "@/i18n/lang";
+import { SITE_URL } from "@/lib/site";
 import { track } from "@/lib/track";
 
 const colors = [
@@ -36,6 +38,9 @@ const T = {
     story: "Instagram story image",
     canvas: "Drawing area. Draw with your finger, a pen or a mouse.",
     url: "BYMANNAPROJECT.COM/KIDS",
+    wa: "WhatsApp",
+    waMessage: (q: string, url: string) => `We drew our answer to today’s Manna Kids question: “${q}”\n\n${url}`,
+    waSaved: "Drawing saved. Attach it to your WhatsApp message.",
   },
   id: {
     cleared: "Halaman dibersihkan",
@@ -58,6 +63,9 @@ const T = {
     story: "Gambar Instagram Story",
     canvas: "Area menggambar. Gambar dengan jari, pena, atau mouse.",
     url: "BYMANNAPROJECT.COM/ID/KIDS",
+    wa: "WhatsApp",
+    waMessage: (q: string, url: string) => `Kami menggambar jawaban untuk pertanyaan Manna Kids hari ini: “${q}”\n\n${url}`,
+    waSaved: "Gambar tersimpan. Lampirkan ke pesan WhatsApp-mu.",
   },
 };
 
@@ -203,6 +211,42 @@ export function DoodlePad({ dayKey, question, dateLabel }: Props) {
     }, "image/png");
   }
 
+  function saveBlob(blob: Blob, name: string) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = name;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  // WhatsApp links can only carry text, so phones share the image through the share menu
+  // (WhatsApp is listed there), and computers save the image and open WhatsApp with the message.
+  async function shareWhatsApp() {
+    if (!hasInk.current) {
+      setStatus(t.drawFirst);
+      setTimeout(() => setStatus(""), 3000);
+      return;
+    }
+    const message = t.waMessage(question, `${SITE_URL}${localPath(lang, "/kids")}`);
+    if (canShareFiles && card.current) {
+      try {
+        await navigator.share({ files: [card.current], text: message, title: t.shareTitle });
+        track("wa_share", "kids-drawing");
+      } catch (err) {
+        if ((err as DOMException)?.name !== "AbortError") setStatus(t.noShare);
+      }
+      return;
+    }
+    // Open WhatsApp first, while the tap still counts (pop-up blockers), then save the image.
+    window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, "_blank", "noopener,noreferrer");
+    track("wa_share", "kids-drawing");
+    const blob = card.current ?? (canvas.current ? await buildDrawingCard(canvas.current, question, dateLabel, t.url) : null);
+    if (blob) saveBlob(blob, `manna-kids-${dayKey}-drawing.png`);
+    setStatus(t.waSaved);
+    setTimeout(() => setStatus(""), 5000);
+  }
+
   async function shareCard() {
     if (!hasInk.current) {
       setStatus(t.drawFirst);
@@ -270,6 +314,12 @@ export function DoodlePad({ dayKey, question, dateLabel }: Props) {
           </button>
           <button type="button" className="btn btn-small" onClick={clear}>{t.clear}</button>
           <button type="button" className="btn btn-small" onClick={download}>{t.save}</button>
+          <button type="button" className="btn btn-small btn-wa" onClick={shareWhatsApp}>
+            <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
+              <path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.7.3-.2.3-.9.9-.9 2.2s.9 2.5 1 2.7c.1.2 1.8 2.8 4.4 3.9 1.6.7 2.3.8 3.1.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.6-.3z" />
+            </svg>
+            {t.wa}
+          </button>
           <button type="button" className="btn btn-small btn-instagram" onClick={shareCard}>
             <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2">
               <rect x="3" y="3" width="18" height="18" rx="5" />
