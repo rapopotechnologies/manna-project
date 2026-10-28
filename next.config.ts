@@ -23,11 +23,11 @@ const nextConfig: NextConfig = {
       { source: "/daily_verses/:path*", destination: "/daily", permanent: true },
 
       // Hidden verses keep their slugs
-      { source: "/hidden_verses/:verse/index.html", destination: "/found/:verse", permanent: true },
-      { source: "/hidden_verses/:verse", destination: "/found/:verse", permanent: true },
+      { source: "/hidden_verses/:verse/index.html", destination: "/found/:verse?src=qr", permanent: true },
+      { source: "/hidden_verses/:verse", destination: "/found/:verse?src=qr", permanent: true },
 
       // Manna Kids
-      { source: "/kids_journal/daily_questions.html", destination: "/kids", permanent: true },
+      { source: "/kids_journal/daily_questions.html", destination: "/kids?src=qr", permanent: true },
       { source: "/kids_journal", destination: "/kids", permanent: true },
       { source: "/kids_journal/:path*", destination: "/kids", permanent: true },
 
