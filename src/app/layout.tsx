@@ -19,6 +19,7 @@ export const metadata: Metadata = {
   applicationName: SITE_NAME,
   appleWebApp: { title: "Manna", statusBarStyle: "default" },
   openGraph: { siteName: SITE_NAME, type: "website", locale: "en_US" },
+  alternates: { types: { "application/rss+xml": [{ url: "/feed.xml", title: "Manna Project: today’s verse" }] } },
 };
 
 export const viewport: Viewport = {
