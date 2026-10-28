@@ -64,7 +64,7 @@ export default async function HomePage() {
       </section>
 
       {/* Welcome mat: today's verse */}
-      <Link className="welcome-mat" href="/daily">
+      <Link className="welcome-mat sky" href="/daily">
         <span className="welcome-sun" aria-hidden="true" />
         <span>
           <span className="label">Today’s verse</span>
@@ -83,21 +83,24 @@ export default async function HomePage() {
           </div>
         </div>
         <ol className="day-arc">
-          <li className="day-stop">
+          <li className="day-stop day-stop-morning">
+            <span className="day-now">Now</span>
             <span className="day-sun day-sun-morning" aria-hidden="true" />
             <span className="day-time">Morning</span>
             <b>Read today’s verse</b>
             <p>A new verse every day. Share it to your Instagram story in one tap.</p>
             <Link href="/daily">Open today’s verse →</Link>
           </li>
-          <li className="day-stop">
+          <li className="day-stop day-stop-noon">
+            <span className="day-now">Now</span>
             <span className="day-sun day-sun-noon" aria-hidden="true" />
             <span className="day-time">Any quiet moment</span>
             <b>Spend five minutes with it</b>
             <p>A short S.O.A.P. reflection: Scripture, Observation, Application, Prayer.</p>
             <Link href="/daily">Reflect on it →</Link>
           </li>
-          <li className="day-stop">
+          <li className="day-stop day-stop-evening">
+            <span className="day-now">Now</span>
             <span className="day-sun day-sun-evening" aria-hidden="true" />
             <span className="day-time">Dinner time</span>
             <b>Ask the kids</b>
