@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { ProductCard } from "@/components/shop/ProductCard";
+import { CONTACT_EMAIL, ETSY_SHOP_URL } from "@/data/products";
 import { getProducts } from "@/lib/content";
+import { MOTTO, SITE_NAME, SITE_URL } from "@/lib/site";
 import { getTodaysQuestion } from "@/lib/kids";
 import { getTodaysManna } from "@/lib/verse";
 
@@ -9,8 +11,34 @@ export default async function HomePage() {
   const featured = products.filter((p) => p.featured);
   const picks = (featured.length ? featured : products).slice(0, 3);
 
+  // Tells search engines who runs the site, for the name and logo shown in results.
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": `${SITE_URL}/#org`,
+        name: SITE_NAME,
+        url: SITE_URL,
+        logo: `${SITE_URL}/brand/icon-512.png`,
+        slogan: MOTTO,
+        email: CONTACT_EMAIL,
+        sameAs: [ETSY_SHOP_URL],
+      },
+      {
+        "@type": "WebSite",
+        "@id": `${SITE_URL}/#website`,
+        name: SITE_NAME,
+        url: SITE_URL,
+        publisher: { "@id": `${SITE_URL}/#org` },
+        inLanguage: "en-US",
+      },
+    ],
+  };
+
   return (
     <div className="wrap">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       {/* Front porch */}
       <section className="porch">
         <div className="porch-lockup">
