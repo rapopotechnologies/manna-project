@@ -161,3 +161,26 @@
 .reader-tabs a[aria-current="page"] .pill { background: rgba(255, 255, 255, 0.18); color: inherit; }
 .approve-btn { background: var(--sage); border-color: var(--sage); color: #1c1b17; }
 .waiting-link { text-decoration: none; display: block; font-weight: 600; }
+.reader-bar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--s-3); }
+.reader-search { display: flex; gap: 6px; align-items: center; }
+.reader-search input { padding: 0.5rem 0.75rem; border-radius: 999px; border: 1.5px solid var(--line-strong); background: var(--paper); color: var(--ink); font: inherit; font-size: var(--t-sm); min-width: 0; width: 220px; max-width: 100%; }
+.reader-search .icon-btn { display: inline-grid; place-items: center; text-decoration: none; }
+.reader-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.reader-list > li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--s-4); padding-block: var(--s-4); border-bottom: 1px dashed var(--line); align-items: start; }
+.reader-main b { word-break: break-all; }
+.reader-meta { font-size: 0.82rem; margin-top: 2px; }
+.reader-progress { margin-top: var(--s-2); font-size: 0.85rem; padding: 0.35rem 0.6rem; border-radius: 8px; background: var(--linen); display: inline-block; }
+.reader-actions { display: flex; flex-direction: column; align-items: flex-end; gap: var(--s-2); }
+.reader-more summary { cursor: pointer; font-size: var(--t-sm); color: var(--ink-soft); list-style: none; }
+.reader-more summary::-webkit-details-marker { display: none; }
+.reader-more summary::after { content: " ▾"; }
+.reader-more[open] summary::after { content: " ▴"; }
+.reader-more-body { margin-top: var(--s-2); padding: var(--s-3); border-radius: 12px; background: var(--linen); display: flex; flex-direction: column; gap: var(--s-3); max-width: 320px; }
+.reader-delete { display: flex; flex-direction: column; align-items: flex-start; gap: var(--s-2); border-top: 1px solid var(--line); padding-top: var(--s-3); }
+.reader-delete .check { font-size: 0.82rem; word-break: break-all; }
+@media (max-width: 760px) {
+  .reader-list > li { grid-template-columns: minmax(0, 1fr); }
+  .reader-actions { align-items: flex-start; }
+  .reader-search input { width: 100%; }
+  .reader-search { width: 100%; }
+}

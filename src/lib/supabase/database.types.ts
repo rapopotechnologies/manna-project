@@ -77,6 +77,24 @@ export type Database = {
     Functions: {
       track: { Args: { metric: string; key?: string }; Returns: undefined };
       delete_my_account: { Args: Record<string, never>; Returns: undefined };
+      admin_reader_details: {
+        Args: { search?: string };
+        Returns: {
+          user_id: string;
+          email: string;
+          status: ReaderStatus;
+          signed_up_at: string;
+          decided_at: string | null;
+          decided_by: string | null;
+          provider: string;
+          last_sign_in_at: string | null;
+          mornings: number;
+          books: number;
+          flowers: number;
+          synced_at: string | null;
+        }[];
+      };
+      admin_delete_reader: { Args: { target: string }; Returns: string };
     };
     Enums: { admin_role: AdminRole; reader_status: ReaderStatus };
     CompositeTypes: { [_ in never]: never };
