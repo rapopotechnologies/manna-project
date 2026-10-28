@@ -167,12 +167,13 @@ export async function renderCard(card: CardContent, layout: CardLayout, headers?
 /** Today's verse as a card. */
 export function renderVerseCard(verse: DailyVerse, layout: CardLayout, headers?: Record<string, string>, lang: Lang = "en") {
   const id = lang === "id";
+  const tsi = id ? verse.tsi : null;
   return renderCard(
     {
       kicker: formatDayLabel(verse.dayKey, lang),
-      body: verse.text,
+      body: tsi ? tsi.text : verse.text,
       quote: true,
-      caption: `${id ? referenceId(verse.reference) : verse.reference} · ${verse.version}`,
+      caption: tsi ? `${tsi.reference} · TSI` : `${id ? referenceId(verse.reference) : verse.reference} · ${verse.version}`,
       url: id ? "bymannaproject.com/id/daily" : "bymannaproject.com/daily",
     },
     layout,

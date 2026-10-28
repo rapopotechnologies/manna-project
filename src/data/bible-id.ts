@@ -91,19 +91,36 @@ export function referenceId(reference: string): string {
 }
 
 /**
- * The passage in the Indonesian Terjemahan Baru on Bible.com, e.g.
- * https://www.bible.com/bible/306/GAL.1.10.TB. Falls back to the chapter for unusual references.
+ * Bible.com / YouVersion code for a reference: "2 Corinthians 10:17-18" → { passage: "2CO.10.17-18", chapter: "2CO.10" }.
+ * Unusual references (e.g. across chapters) give just the chapter as the passage.
  */
-export function tbUrl(reference: string): string | null {
+export function usfmFor(reference: string): { passage: string; chapter: string } | null {
   const parts = split(reference);
   const code = parts ? BOOKS_ID[parts.book]?.[1] : undefined;
   if (!parts || !code) return null;
   const m = parts.rest.match(/^(\d+)(?::(\d+)(?:\s*[-–—]\s*(\d+))?)?$/);
-  const chapter = m?.[1] ?? parts.rest.match(/^\d+/)?.[0];
-  if (!chapter) return null;
+  const chapterNo = m?.[1] ?? parts.rest.match(/^\d+/)?.[0];
+  if (!chapterNo) return null;
+  const chapter = `${code}.${chapterNo}`;
   const verses = m?.[2] ? `.${m[2]}${m[3] ? `-${m[3]}` : ""}` : "";
-  return `https://www.bible.com/bible/306/${code}.${chapter}${verses}.TB`;
+  return { passage: `${chapter}${verses}`, chapter };
 }
+
+/** The passage in the Terjemahan Baru on Bible.com, e.g. https://www.bible.com/bible/306/GAL.1.10.TB */
+export function tbUrl(reference: string): string | null {
+  const u = usfmFor(reference);
+  return u ? `https://www.bible.com/bible/306/${u.passage}.TB` : null;
+}
+
+/** The whole chapter in the Terjemahan Sederhana Indonesia on Bible.com. */
+export function tsiChapterUrl(reference: string): string | null {
+  const u = usfmFor(reference);
+  return u ? `https://www.bible.com/bible/320/${u.chapter}.TSI` : null;
+}
+
+/** Credit line YouVersion asks for when showing the TSI. */
+export const TSI_NAME = "Terjemahan Sederhana Indonesia";
+export const TSI_COPYRIGHT = "©2014–2023 Yayasan Alkitab Bahasa Kita dan Pioneer Bible Translators International";
 
 export const BOOK_GROUPS_ID: Record<string, string> = {
   Law: "Taurat",

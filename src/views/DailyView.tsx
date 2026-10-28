@@ -6,11 +6,11 @@ import { VerseActions } from "@/components/daily/VerseActions";
 import { DayVariants } from "@/components/DayVariants";
 import { DailyGather } from "@/components/progress/DailyGather";
 import { TrackView } from "@/components/TrackView";
-import { referenceId, tbUrl } from "@/data/bible-id";
+import { referenceId, tbUrl, TSI_COPYRIGHT, TSI_NAME, tsiChapterUrl } from "@/data/bible-id";
 import { langAlternates, localPath, type Lang } from "@/i18n/lang";
 import { formatDayLabel } from "@/lib/day";
 import { SITE_URL } from "@/lib/site";
-import { chapterUrl, getTodaysManna, getVerseDays } from "@/lib/verse";
+import { chapterUrl, getTodaysManna, getVerseDays, type DailyVerse } from "@/lib/verse";
 
 const T = {
   en: {
@@ -45,10 +45,21 @@ const T = {
   },
 };
 
+/** What the page shows for a verse: TSI on the Indonesian site when we have it, otherwise the NIV. */
+export function shownVerse(verse: DailyVerse, lang: Lang) {
+  if (lang === "id" && verse.tsi) return { text: verse.tsi.text, reference: verse.tsi.reference, version: verse.tsi.version, lang: "id" as const };
+  return {
+    text: verse.text,
+    reference: lang === "id" ? referenceId(verse.reference) : verse.reference,
+    version: verse.version,
+    lang: "en" as const,
+  };
+}
+
 export async function dailyMetadata(lang: Lang): Promise<Metadata> {
-  const verse = await getTodaysManna();
-  const ref = lang === "id" ? referenceId(verse.reference) : verse.reference;
-  const description = `“${verse.text}” ${ref} (${verse.version})`;
+  const shown = shownVerse(await getTodaysManna(), lang);
+  const ref = shown.reference;
+  const description = `“${shown.text}” ${ref} (${shown.version})`;
   const title = lang === "id" ? "Ayat hari ini" : "Today’s verse";
   const ogTitle = `${title}: ${ref}`;
   const base = {
@@ -86,33 +97,46 @@ export async function DailyView({ lang }: { lang: Lang }) {
         utcDay={utcDay}
         render={(day) => {
           const verse = byDay.get(day)!;
-          const isLong = verse.text.length > 220;
-          const ref = lang === "id" ? referenceId(verse.reference) : verse.reference;
+          const shown = shownVerse(verse, lang);
+          const isLong = shown.text.length > 220;
+          const ref = shown.reference;
           const tb = lang === "id" ? tbUrl(verse.reference) : null;
+          const showsTsi = shown.version === "TSI";
           return (
             <section className="window" aria-labelledby={`verse-heading-${day}`}>
               <span className="window-sun" aria-hidden="true" />
               <h2 id={`verse-heading-${day}`} className="window-date">{formatDayLabel(verse.dayKey, lang)}</h2>
 
               <blockquote className={`verse${isLong ? " is-long" : ""}`}>
-                <p lang="en">“{verse.text}”</p>
+                <p lang={shown.lang}>“{shown.text}”</p>
                 <cite className="verse-ref">
-                  {ref} · {verse.version}
+                  {ref} · {shown.version}
                 </cite>
               </blockquote>
-              {tb && (
-                <p className="verse-tb">
-                  Ayat ini dalam bahasa Inggris (NIV).{" "}
-                  <a href={tb} target="_blank" rel="noopener noreferrer">Baca {ref} dalam Terjemahan Baru ↗</a>
-                </p>
+              {lang === "id" && (
+                <div className="verse-tb">
+                  {showsTsi ? (
+                    <details className="verse-niv">
+                      <summary>Lihat dalam bahasa Inggris (NIV)</summary>
+                      <p lang="en">“{verse.text}” <span className="verse-niv-ref">{verse.reference} · {verse.version}</span></p>
+                    </details>
+                  ) : (
+                    <p>Ayat ini dalam bahasa Inggris (NIV).</p>
+                  )}
+                  {tb && (
+                    <p>
+                      <a href={tb} target="_blank" rel="noopener noreferrer">Baca juga dalam Terjemahan Baru ↗</a>
+                    </p>
+                  )}
+                </div>
               )}
 
               <VerseActions
                 dayKey={verse.dayKey}
-                text={verse.text}
+                text={shown.text}
                 reference={ref}
-                version={verse.version}
-                chapterHref={chapterUrl(verse.reference, verse.version)}
+                version={shown.version}
+                chapterHref={(showsTsi && tsiChapterUrl(verse.reference)) || chapterUrl(verse.reference, verse.version)}
                 cardHref="/daily/card"
                 shareUrl={`${SITE_URL}${L("/daily")}`}
               />
@@ -128,6 +152,12 @@ export async function DailyView({ lang }: { lang: Lang }) {
                   <span>{t.shelf}</span>
                 )}
               </div>
+              {showsTsi && (
+                <p className="verse-credit">
+                  {TSI_NAME} (TSI) {TSI_COPYRIGHT}. Lewat{" "}
+                  <a href="https://www.bible.com/versions/320" target="_blank" rel="noopener noreferrer">YouVersion</a>.
+                </p>
+              )}
             </section>
           );
         }}

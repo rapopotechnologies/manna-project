@@ -856,8 +856,8 @@ a:hover { color: var(--gold-text); }
 /* Shared share button outside the verse window */
 .btn-instagram { background: var(--gold); border-color: var(--gold); color: #1c1b17; }
 .btn-instagram:hover { background: var(--ink); border-color: var(--ink); color: var(--linen); }
-.btn-wa { background: #25d366; border-color: #25d366; color: #0b2e17; }
-.btn-wa:hover { background: var(--ink); border-color: var(--ink); color: var(--linen); }
+.btn-wa, .window .btn-wa { background: #25d366; border-color: #25d366; color: #0b2e17; }
+.btn-wa:hover, .window .btn-wa:hover { background: var(--ink); border-color: var(--ink); color: var(--linen); }
 .btn-sage { background: var(--sage); border-color: var(--sage); color: #1c1b17; }
 .btn-sage:hover { background: var(--ink); border-color: var(--ink); color: var(--linen); }
 .btn-sage[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--linen); }
@@ -1209,3 +1209,9 @@ a:hover { color: var(--gold-text); }
 /* Indonesian pages: where to read the verse in the Terjemahan Baru */
 .verse-tb { position: relative; margin: var(--s-3) 0 var(--s-5); max-width: 60ch; font-size: var(--t-sm); line-height: 1.5; color: var(--sky-ink, var(--ink-soft)); }
 .verse-tb a { color: inherit; font-weight: 600; }
+.verse-tb p { margin: 0 0 var(--s-2); }
+.verse-niv summary { cursor: pointer; font-weight: 600; text-decoration: underline; text-decoration-color: var(--gold); text-underline-offset: 3px; margin-bottom: var(--s-2); }
+.verse-niv p { font-style: italic; }
+.verse-niv-ref { font-style: normal; font-size: 0.85em; white-space: nowrap; }
+.verse-credit { margin: var(--s-3) 0 0; font-size: 0.75rem; line-height: 1.5; color: var(--sky-ink, var(--ink-soft)); opacity: 0.8; }
+.verse-credit a { color: inherit; }

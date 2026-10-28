@@ -37,8 +37,8 @@ function faqs(lang: Lang): { q: string; a: React.ReactNode }[] {
         ),
       },
       {
-        q: "Kenapa ayatnya dalam bahasa Inggris?",
-        a: "Ayat harian berasal dari OurManna.com dalam terjemahan NIV (bahasa Inggris). Di bawah setiap ayat ada tautan untuk membacanya dalam Terjemahan Baru (TB) di Bible.com. Ayat-ayat tersembunyi tetap memakai kata-kata saat pertama kali dibagikan, dan masing-masing diberi label terjemahannya.",
+        q: "Terjemahan Alkitab apa yang kalian pakai?",
+        a: "Ayat harian dipilih oleh OurManna.com. Di situs berbahasa Indonesia, ayatnya ditampilkan dalam Terjemahan Sederhana Indonesia (TSI) lewat YouVersion, dengan pilihan untuk melihatnya dalam bahasa Inggris (NIV) dan tautan ke Terjemahan Baru (TB) di Bible.com. Ayat-ayat tersembunyi tetap memakai kata-kata saat pertama kali dibagikan, dan masing-masing diberi label terjemahannya.",
       },
       {
         q: "Kapan ayat baru muncul?",

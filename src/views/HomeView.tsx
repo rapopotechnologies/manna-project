@@ -2,13 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { DayVariants } from "@/components/DayVariants";
 import { ProductCard } from "@/components/shop/ProductCard";
-import { referenceId } from "@/data/bible-id";
+
 import { CONTACT_EMAIL, ETSY_SHOP_URL, SHOPEE_SHOP_URL } from "@/data/products";
 import { langAlternates, localPath, type Lang } from "@/i18n/lang";
 import { getProducts } from "@/lib/content";
 import { getKidsDays } from "@/lib/kids";
 import { MOTTO, MOTTO_ID, SITE_NAME, SITE_URL } from "@/lib/site";
 import { getVerseDays } from "@/lib/verse";
+import { shownVerse } from "@/views/DailyView";
 
 const T = {
   en: {
@@ -161,15 +162,15 @@ export async function HomeView({ lang }: { lang: Lang }) {
         fallback={verseDays.days[verseDays.days.length - 1].dayKey}
         utcDay={verseDays.utcDay}
         render={(day) => {
-          const verse = verses.get(day)!;
+          const verse = shownVerse(verses.get(day)!, lang);
           return (
             <Link className="welcome-mat sky" href={L("/daily")}>
               <span className="welcome-sun" aria-hidden="true" />
               <span>
                 <span className="label">{t.todaysVerse}</span>
-                <span className="welcome-verse" lang="en">“{verse.text}”</span>
+                <span className="welcome-verse" lang={verse.lang}>“{verse.text}”</span>
                 <span className="welcome-ref">
-                  {lang === "id" ? referenceId(verse.reference) : verse.reference} · {verse.version}
+                  {verse.reference} · {verse.version}
                 </span>
               </span>
               <span className="welcome-go">{t.readReflect}</span>

@@ -40,7 +40,7 @@ const T = {
     shareLink: "Bagikan tautan",
     copy: "Salin",
     saveImage: "Simpan gambar",
-    chapter: "Baca pasal (NIV) ↗",
+    chapter: "Baca pasal ↗",
   },
 };
 
