@@ -34,6 +34,7 @@ async function EditProduct({ params, searchParams }: PageProps<"/admin/products/
         details: Array.isArray(row.details) ? (row.details as ProductFormValues["details"]) : [],
         pairs_with: row.pairs_with,
         etsy_url: row.etsy_url,
+        shopee_url: row.shopee_url,
         images: Array.isArray(row.images) ? (row.images as ProductFormValues["images"]) : [],
         featured: row.featured,
         published: row.published,

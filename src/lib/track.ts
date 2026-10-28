@@ -3,7 +3,7 @@
 
 import { SUPABASE_KEY, SUPABASE_URL, hasSupabase } from "@/lib/supabase/env";
 
-export type Metric = "verse_view" | "qr_scan" | "kids_view" | "found_view" | "ig_share" | "link_share" | "etsy_click";
+export type Metric = "verse_view" | "qr_scan" | "kids_view" | "found_view" | "ig_share" | "link_share" | "etsy_click" | "shopee_click";
 
 export function track(metric: Metric, key = "") {
   if (typeof window === "undefined" || !hasSupabase) return;

@@ -2,7 +2,7 @@
 // Details come from the listing photos; check them against Etsy when a listing changes.
 // Image paths are the original site's paths, served from /public.
 
-export type ProductCategory = "Journals" | "Bookmarks" | "Stickers";
+export type ProductCategory = "Journals" | "Planners" | "Bookmarks" | "Stickers";
 
 export type Product = {
   slug: string;
@@ -17,10 +17,14 @@ export type Product = {
   /** Slugs of products that go well with this one. */
   pairsWith: string[];
   etsyUrl: string;
+  /** Shopee listing for Indonesian buyers. Falls back to the Shopee shop when missing. */
+  shopeeUrl?: string;
   images: { src: string; alt: string }[];
 };
 
 export const ETSY_SHOP_URL = "https://www.etsy.com/shop/MannaProject";
+/** Shopee shop for buyers in Indonesia (most of our readers). */
+export const SHOPEE_SHOP_URL = "https://id.shp.ee/K3zkZe4a";
 /** General questions, ideas and partnerships. Forwards to the team inbox. */
 export const CONTACT_EMAIL = "info@bymannaproject.com";
 /** Order and account help. Also the address site emails are sent from, so replies reach the team. */
@@ -28,8 +32,9 @@ export const SUPPORT_EMAIL = "support@bymannaproject.com";
 
 export const CATEGORY_NOTES: Record<ProductCategory, string> = {
   Journals: "Digital journals for your tablet",
+  Planners: "Printable planners for your days, weeks and year",
   Bookmarks: "Printable bookmarks for all 66 books",
-  Stickers: "Digital stickers for journaling apps",
+  Stickers: "Digital stickers for journaling apps, and vinyl stickers",
 };
 
 const bookmarkDetails = [
@@ -193,4 +198,4 @@ export function findProduct(slug: string): Product | undefined {
   return products.find((p) => p.slug === slug);
 }
 
-export const CATEGORY_ORDER: ProductCategory[] = ["Journals", "Bookmarks", "Stickers"];
+export const CATEGORY_ORDER: ProductCategory[] = ["Journals", "Planners", "Bookmarks", "Stickers"];

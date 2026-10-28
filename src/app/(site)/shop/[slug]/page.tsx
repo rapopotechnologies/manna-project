@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { EtsyLink } from "@/components/shop/EtsyLink";
+import { BuyButtons } from "@/components/shop/BuyButtons";
 import { Gallery } from "@/components/shop/Gallery";
 import { ProductCard } from "@/components/shop/ProductCard";
 import { CATEGORY_NOTES } from "@/data/products";
@@ -61,10 +61,13 @@ export default async function ProductPage({ params }: PageProps<"/shop/[slug]">)
           <h1>{product.name}</h1>
           <p className="pdp-desc">{product.description}</p>
 
-          <EtsyLink className="btn btn-primary pdp-buy" href={product.etsyUrl} slug={product.slug}>
-            Buy on Etsy ↗
-          </EtsyLink>
-          <p className="pdp-note">Checkout happens securely on Etsy. Downloads are ready right after purchase.</p>
+          <BuyButtons slug={product.slug} etsyUrl={product.etsyUrl} shopeeUrl={product.shopeeUrl} />
+          <p className="pdp-note">
+            Shopee for buyers in Indonesia, Etsy everywhere else. Checkout happens securely on their site
+            {product.details.some((d) => /shipped/i.test(d.value))
+              ? ", and the sticker is shipped to you."
+              : ", and downloads are ready right after purchase."}
+          </p>
 
           <section aria-labelledby="includes">
             <h2 id="includes" className="label">What’s included</h2>

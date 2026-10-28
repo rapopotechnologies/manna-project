@@ -1103,3 +1103,12 @@ a:hover { color: var(--gold-text); }
     height: 36px;
   }
 }
+
+/* Shopee + Etsy */
+.buy-buttons { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+.buy-buttons .pdp-buy { flex-direction: column; gap: 2px; line-height: 1.1; padding-block: 0.55rem; }
+.buy-where { font-size: 0.6rem; letter-spacing: 0.12em; opacity: 0.75; text-transform: uppercase; }
+.band-buttons { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+.site-footer .footer-cols a + a { display: block; }
+.door-static:hover { transform: none; border-color: var(--line-strong); }
+.door-links { display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-4); font-size: var(--t-sm); margin-top: var(--s-1); }

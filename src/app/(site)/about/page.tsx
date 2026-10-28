@@ -72,7 +72,8 @@ export default function AboutPage() {
             <ul className="fixtures">
               <li><Link href="/shop/bible-reading-tracker">A Bible reading tracker</Link> and S.O.A.P. journal</li>
               <li><Link href="/shop/book-of-the-bible-bookmarks-bundle">Bookmarks</Link> for all 66 books of the Bible</li>
-              <li><Link href="/shop">Digital stickers</Link> for journaling apps</li>
+              <li><Link href="/shop#planners">Printable planners</Link> for your days, weeks and year</li>
+              <li><Link href="/shop#stickers">Digital and vinyl stickers</Link> for journaling and everyday things</li>
             </ul>
           </article>
         </div>

@@ -64,6 +64,7 @@ export type Database = {
           details: Json;
           pairs_with: string[];
           etsy_url: string;
+          shopee_url: string | null;
           images: Json;
           featured: boolean;
           published: boolean;
