@@ -1033,3 +1033,46 @@ a:hover { color: var(--gold-text); }
 .btn-danger { border-color: #c4553b; color: #c4553b; }
 .btn-danger:hover { background: #c4553b; border-color: #c4553b; color: #fff; }
 .account-invite { margin-top: var(--s-2); }
+
+/* Header account icon */
+.site-header-inner { position: relative; }
+.header-right { display: flex; align-items: center; gap: var(--s-4); }
+.account-link {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1.5px solid var(--line-strong);
+  color: var(--ink);
+  flex-shrink: 0;
+  transition: border-color 0.2s, background-color 0.2s;
+}
+.account-link { text-decoration: none; }
+.account-link:hover { border-color: var(--ink); color: var(--ink); }
+.account-link[aria-current="page"] { background: var(--chip); border-color: var(--gold); }
+.account-dot { position: absolute; top: 1px; right: 1px; width: 10px; height: 10px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 0 2px var(--linen); transform: scale(0); transition: transform 0.25s; }
+.account-link.is-signed-in .account-dot { transform: scale(1); }
+.account-text { display: none; }
+@media (min-width: 641px) {
+  .account-link:not(.is-signed-in) { display: inline-flex; gap: 6px; width: auto; padding: 0 14px 0 9px; border-radius: 999px; }
+  .account-link:not(.is-signed-in) .account-text {
+    display: inline;
+    font-family: var(--f-label);
+    font-weight: 700;
+    font-size: var(--t-xs);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+}
+@media (max-width: 640px) {
+  .header-right { display: contents; }
+  .account-link {
+    position: absolute;
+    top: calc(var(--s-2) + 2px);
+    right: max(20px, env(safe-area-inset-right, 0px));
+    width: 36px;
+    height: 36px;
+  }
+}

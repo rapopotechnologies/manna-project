@@ -4,7 +4,7 @@ import { SITE_URL } from "@/lib/site";
 // Sends the few emails the site itself sends (sign-up and password emails come from Supabase).
 // Uses Resend's HTTP API with RESEND_API_KEY. Without the key, sending is skipped.
 
-const FROM = "Manna Project <hello@bymannaproject.com>";
+const FROM = "Manna Project <support@bymannaproject.com>";
 
 export const canSendEmail = () => Boolean(process.env.RESEND_API_KEY);
 
