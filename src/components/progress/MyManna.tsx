@@ -27,15 +27,15 @@ const T = {
     streak: (n: number) => ` · ${n} weeks in a row`,
     sabbathNote: "No manna fell on the Sabbath, so one missed day a week never breaks your streak.",
     hiddenLabel: "Hidden manna",
-    sabbath: "Sabbath rest",
+    sabbath: "Day off",
     gatheredToday: (n: number, total: number) => `${n} of ${total} gathered today`,
-    noManna: "No manna falls today. Rest, and come back tomorrow morning (Exodus 16:26).",
-    allFound: "You found them all today. New manna falls tomorrow morning.",
-    double: "It’s the sixth day, so twice as much fell today. ",
-    look: "Look along the edges of the pages around the site. Gather it today: like the manna in the wilderness, it doesn’t keep overnight.",
+    noManna: "The manna’s taking a day off. Fresh pieces fall tomorrow morning.",
+    allFound: "You found every piece today! Fresh ones fall tomorrow morning.",
+    double: "Bonus Friday: twice as much fell today! ",
+    look: "Pieces are hiding along the edges of pages around the site. Grab them before midnight, when they melt away.",
     hiddenTotal: (n: number) => `${n} gathered in all`,
     fullDays: (n: number) => ` · ${n} ${plural(n, "day", "days")} with every piece found`,
-    rev: "“To the one who conquers I will give some of the hidden manna.” Revelation 2:17",
+    tagline: "New hiding spots every morning.",
     library: "The library",
     shelf: (n: number) => `Your bookshelf: ${n} of 66`,
     shelfNote: "Each day’s verse adds its book to your shelf.",
@@ -54,15 +54,15 @@ const T = {
     streak: (n: number) => ` · ${n} minggu berturut-turut`,
     sabbathNote: "Manna tidak turun pada hari Sabat, jadi satu hari terlewat dalam seminggu tidak memutus rangkaianmu.",
     hiddenLabel: "Manna tersembunyi",
-    sabbath: "Istirahat Sabat",
+    sabbath: "Hari libur",
     gatheredToday: (n: number, total: number) => `${n} dari ${total} terkumpul hari ini`,
-    noManna: "Hari ini tidak ada manna yang turun. Beristirahatlah, dan kembali besok pagi (Keluaran 16:26).",
-    allFound: "Kamu menemukan semuanya hari ini. Manna baru turun besok pagi.",
-    double: "Ini hari keenam, jadi hari ini turun dua kali lipat. ",
-    look: "Cari di tepi halaman-halaman di situs ini. Kumpulkan hari ini: seperti manna di padang gurun, ia tidak tahan sampai besok.",
+    noManna: "Manna sedang libur hari ini. Butir baru turun besok pagi.",
+    allFound: "Kamu menemukan semua butir hari ini! Yang baru turun besok pagi.",
+    double: "Bonus Jumat: hari ini turun dua kali lipat! ",
+    look: "Butir-butirnya bersembunyi di tepi halaman-halaman di situs ini. Ambil sebelum tengah malam, sebelum semuanya meleleh.",
     hiddenTotal: (n: number) => `${n} terkumpul seluruhnya`,
     fullDays: (n: number) => ` · ${n} hari dengan semua butir ditemukan`,
-    rev: "“Barangsiapa menang, kepadanya akan Kuberikan dari manna yang tersembunyi.” Wahyu 2:17",
+    tagline: "Tempat persembunyian baru setiap pagi.",
     library: "Perpustakaan",
     shelf: (n: number) => `Rak bukumu: ${n} dari 66`,
     shelfNote: "Setiap ayat harian menambahkan kitabnya ke rakmu.",
@@ -140,7 +140,7 @@ export function MyManna() {
           {t.hiddenTotal(hiddenTotal)}
           {fullDays ? t.fullDays(fullDays) : ""}
         </p>
-        <p className="hand hidden-verse">{t.rev}</p>
+        <p className="hand hidden-verse">{t.tagline}</p>
       </section>
 
       <section className="progress-card" aria-labelledby="shelf-title">

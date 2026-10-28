@@ -10,7 +10,6 @@ import { gatherHiddenManna, useProgress } from "@/lib/progress";
 
 /**
  * Today's hidden manna on this page, tucked along the edge. Tap to gather.
- * "To the one who conquers I will give some of the hidden manna." Revelation 2:17
  */
 export function HiddenManna() {
   const fullPath = usePathname();
