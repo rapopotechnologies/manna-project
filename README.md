@@ -29,7 +29,9 @@ npm run build && npm run start   # production build
 | Your account | `/account` | Optional reader accounts (email + password; Google button behind `NEXT_PUBLIC_GOOGLE_SIGNIN=on`). Syncs progress via `src/lib/sync.ts` |
 | Admin | `/admin` | Invite-only. Products, hidden verses, kids' questions, team, change history, traffic |
 
-A "day" runs midnight to midnight Pacific time (`src/lib/day.ts`).
+Each reader gets the day's content at their own midnight (`src/lib/reader-day.ts`). Pages include every day a reader could be on, and a tiny head script plus CSS shows the reader's own day at first paint (`src/components/DayVariants.tsx`).
+
+The daily verse comes from an archive in Supabase (`daily_verses`). A database job (`pg_cron`, every hour at :05) fetches OurManna and saves the verse for that UTC date, skipping until OurManna has switched. Because OurManna publishes at about midnight UTC, readers ahead of UTC (Indonesia) get each new verse at about 7am local time. Admin traffic counts still use Pacific dates.
 
 ## Old URLs (do not remove)
 

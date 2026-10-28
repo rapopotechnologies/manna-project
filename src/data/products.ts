@@ -37,6 +37,21 @@ export const CATEGORY_NOTES: Record<ProductCategory, string> = {
   Stickers: "Digital stickers for journaling apps, and vinyl stickers",
 };
 
+/** Category names and notes for the Indonesian site. */
+export const CATEGORY_LABELS_ID: Record<ProductCategory, string> = {
+  Journals: "Jurnal",
+  Planners: "Planner",
+  Bookmarks: "Pembatas buku",
+  Stickers: "Stiker",
+};
+
+export const CATEGORY_NOTES_ID: Record<ProductCategory, string> = {
+  Journals: "Jurnal digital untuk tabletmu",
+  Planners: "Planner cetak untuk harian, mingguan, dan tahunan",
+  Bookmarks: "Pembatas buku cetak untuk ke-66 kitab",
+  Stickers: "Stiker digital untuk aplikasi jurnal, dan stiker vinil",
+};
+
 const bookmarkDetails = [
   { label: "Format", value: "Printable PDF and JPEG" },
   { label: "Bookmark size", value: "5.5 × 15 cm" },

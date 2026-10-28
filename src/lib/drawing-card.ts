@@ -51,7 +51,7 @@ function loadWordmark() {
   return wordmark;
 }
 
-export async function buildDrawingCard(drawing: HTMLCanvasElement, question: string, dateLabel: string): Promise<Blob | null> {
+export async function buildDrawingCard(drawing: HTMLCanvasElement, question: string, dateLabel: string, url = "BYMANNAPROJECT.COM/KIDS"): Promise<Blob | null> {
   await document.fonts?.ready;
   const logo = await loadWordmark().catch(() => null);
   const read = fontVar("--font-read", "Georgia, serif");
@@ -135,7 +135,7 @@ export async function buildDrawingCard(drawing: HTMLCanvasElement, question: str
   ctx.fillStyle = "#1C1B17";
   ctx.font = `700 24px ${label}`;
   ctx.textAlign = "right";
-  ctx.fillText("BYMANNAPROJECT.COM/KIDS", W - PAD, logoTop + 80);
+  ctx.fillText(url, W - PAD, logoTop + 80);
 
   return new Promise((resolve) => canvas.toBlob((b) => resolve(b), "image/png"));
 }

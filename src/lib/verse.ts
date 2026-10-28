@@ -1,10 +1,20 @@
 import { cacheLife, cacheTag } from "next/cache";
 import { fallbackVerses, type Verse } from "@/data/fallback-verses";
-import { dayKeyFor, dayNumber } from "@/lib/day";
+import { dayNumber } from "@/lib/day";
+import { addDays, isDayKey, utcDayKey } from "@/lib/reader-day";
+import { hasSupabase } from "@/lib/supabase/env";
+import { createPublicClient } from "@/lib/supabase/public";
 
 export type DailyVerse = Verse & {
   dayKey: string;
   source: "ourmanna" | "fallback";
+};
+
+export type VerseDays = {
+  /** The UTC date these were assembled on. */
+  utcDay: string;
+  /** Verses for the days readers could be on, oldest first (usually UTC yesterday and today). */
+  days: DailyVerse[];
 };
 
 const OURMANNA_URL = "https://beta.ourmanna.com/api/v1/get?format=json&order=daily";
@@ -28,21 +38,71 @@ async function fetchOurManna(): Promise<Verse | null> {
   }
 }
 
+const fallbackFor = (dayKey: string): DailyVerse => ({
+  ...fallbackVerses[dayNumber(dayKey) % fallbackVerses.length],
+  dayKey,
+  source: "fallback",
+});
+
 /**
- * Today's verse. Cached on the server and refreshed every 15 minutes, so the
- * page is served instantly and picks up the new verse shortly after midnight.
+ * The verses for UTC yesterday and today, from the archive the database keeps
+ * (it saves OurManna's verse every day). Cached and refreshed every 15 minutes.
+ * If today's isn't archived yet, OurManna is asked directly; if that fails, a
+ * verse from our own backup list is used, so the page is never empty.
  */
-export async function getTodaysManna(): Promise<DailyVerse> {
+export async function getVerseDays(): Promise<VerseDays> {
   "use cache";
   cacheLife({ stale: 300, revalidate: 900, expire: 3600 });
   cacheTag("daily-verse");
 
-  const dayKey = dayKeyFor(new Date());
-  const live = await fetchOurManna();
-  if (live) return { ...live, dayKey, source: "ourmanna" };
+  const utcDay = utcDayKey(new Date());
+  const yesterday = addDays(utcDay, -1);
+  const archived = new Map<string, DailyVerse>();
 
-  const fallback = fallbackVerses[dayNumber(dayKey) % fallbackVerses.length];
-  return { ...fallback, dayKey, source: "fallback" };
+  if (hasSupabase) {
+    try {
+      const { data } = await createPublicClient()
+        .from("daily_verses")
+        .select("day, text, reference, version")
+        .gte("day", yesterday)
+        .lte("day", utcDay)
+        .order("day");
+      for (const r of data ?? []) {
+        archived.set(r.day, { dayKey: r.day, text: r.text, reference: r.reference, version: r.version, source: "ourmanna" });
+      }
+    } catch {
+      // Archive unavailable; fall through to OurManna directly.
+    }
+  }
+
+  if (!archived.has(utcDay)) {
+    const live = await fetchOurManna();
+    archived.set(utcDay, live ? { ...live, dayKey: utcDay, source: "ourmanna" } : fallbackFor(utcDay));
+  }
+
+  return { utcDay, days: [...archived.values()].sort((a, b) => a.dayKey.localeCompare(b.dayKey)) };
+}
+
+/** The newest verse (link previews, the RSS feed, the default share image). */
+export async function getTodaysManna(): Promise<DailyVerse> {
+  const { days } = await getVerseDays();
+  return days[days.length - 1];
+}
+
+/** The verse for a specific day if we have it, otherwise the newest. */
+export async function getVerseForDay(day: string | null): Promise<DailyVerse> {
+  const { days } = await getVerseDays();
+  if (isDayKey(day)) {
+    const match = days.find((v) => v.dayKey === day);
+    if (match) return match;
+    if (hasSupabase) {
+      try {
+        const { data } = await createPublicClient().from("daily_verses").select("day, text, reference, version").eq("day", day).maybeSingle();
+        if (data) return { dayKey: data.day, text: data.text, reference: data.reference, version: data.version, source: "ourmanna" };
+      } catch {}
+    }
+  }
+  return days[days.length - 1];
 }
 
 /** Bible Gateway link to the whole chapter, e.g. "Galatians 1:10" -> Galatians 1. */

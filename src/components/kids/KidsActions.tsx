@@ -2,11 +2,40 @@
 
 import { useEffect, useState } from "react";
 import { ShareToInstagram } from "@/components/ShareToInstagram";
+import { ShareToWhatsApp } from "@/components/ShareToWhatsApp";
+import { useLang } from "@/i18n/client";
+import { localPath } from "@/i18n/lang";
+import { SITE_URL } from "@/lib/site";
 
 type Props = { question: string; dayKey: string };
 
-/** Read aloud, share and copy for today's kids' question. */
+const T = {
+  en: {
+    copyPrefix: "Manna Kids question",
+    copied: "Question copied",
+    select: "Select the question above to copy it",
+    stop: "Stop reading",
+    read: "Read it aloud",
+    title: "Today’s Manna Kids question",
+    wa: (q: string, url: string) => `Manna Kids question for today: ${q}\n\nAsk it around the table: ${url}`,
+    copy: "Copy",
+  },
+  id: {
+    copyPrefix: "Pertanyaan Manna Kids",
+    copied: "Pertanyaan tersalin",
+    select: "Pilih teks pertanyaan di atas untuk menyalinnya",
+    stop: "Berhenti membaca",
+    read: "Bacakan",
+    title: "Pertanyaan Manna Kids hari ini",
+    wa: (q: string, url: string) => `Pertanyaan Manna Kids hari ini: ${q}\n\nTanyakan di meja makan: ${url}`,
+    copy: "Salin",
+  },
+};
+
+/** Read aloud, share and copy for today's kids' question (pass it in the page's language). */
 export function KidsActions({ question, dayKey }: Props) {
+  const lang = useLang();
+  const t = T[lang];
   const [canSpeak, setCanSpeak] = useState(false);
   const [speaking, setSpeaking] = useState(false);
   const [status, setStatus] = useState("");
@@ -33,6 +62,7 @@ export function KidsActions({ question, dayKey }: Props) {
     }
     const utterance = new SpeechSynthesisUtterance(question);
     utterance.rate = 0.9;
+    utterance.lang = lang === "id" ? "id-ID" : "en-US";
     utterance.onend = () => setSpeaking(false);
     utterance.onerror = () => setSpeaking(false);
     synth.cancel();
@@ -42,10 +72,10 @@ export function KidsActions({ question, dayKey }: Props) {
 
   async function copy() {
     try {
-      await navigator.clipboard.writeText(`Manna Kids question: ${question}`);
-      flash("Question copied");
+      await navigator.clipboard.writeText(`${t.copyPrefix}: ${question}`);
+      flash(t.copied);
     } catch {
-      flash("Select the question above to copy it");
+      flash(t.select);
     }
   }
 
@@ -55,17 +85,18 @@ export function KidsActions({ question, dayKey }: Props) {
         {canSpeak && (
           <button type="button" className="btn btn-sage" onClick={readAloud} aria-pressed={speaking}>
             <SpeakerGlyph />
-            {speaking ? "Stop reading" : "Read it aloud"}
+            {speaking ? t.stop : t.read}
           </button>
         )}
         <ShareToInstagram
-          storyUrl={`/kids/card?format=story&d=${dayKey}`}
+          storyUrl={`/kids/card?format=story&d=${dayKey}${lang === "id" ? "&lang=id" : ""}`}
           filename={`manna-kids-${dayKey}-story.png`}
-          title="Today’s Manna Kids question"
+          title={t.title}
           trackKey="kids"
           onStatus={flash}
         />
-        <button type="button" className="btn" onClick={copy}>Copy</button>
+        <ShareToWhatsApp text={t.wa(question, `${SITE_URL}${localPath(lang, "/kids")}`)} trackKey="kids" />
+        <button type="button" className="btn" onClick={copy}>{t.copy}</button>
       </div>
       <p className="toast" role="status" aria-live="polite">{status}</p>
     </div>

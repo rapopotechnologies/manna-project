@@ -11,8 +11,9 @@ export async function updateQuestion(formData: FormData) {
   const { supabase } = await requireAdmin();
   const id = Number(formData.get("id"));
   const question = clean(formData.get("question"));
-  if (!id || question.length < 3) redirect("/admin/kids?error=short");
-  await supabase.from("kids_questions").update({ question }).eq("id", id);
+  const questionId = clean(formData.get("question_id"));
+  if (!id || question.length < 3 || (questionId && questionId.length < 3)) redirect("/admin/kids?error=short");
+  await supabase.from("kids_questions").update({ question, question_id: questionId || null }).eq("id", id);
   updateTag(CONTENT_TAGS.kids);
   redirect(`/admin/kids?saved=${id}#q-${id}`);
 }
@@ -20,9 +21,10 @@ export async function updateQuestion(formData: FormData) {
 export async function addQuestion(formData: FormData) {
   const { supabase } = await requireAdmin();
   const question = clean(formData.get("question"));
-  if (question.length < 3) redirect("/admin/kids?error=short");
+  const questionId = clean(formData.get("question_id"));
+  if (question.length < 3 || (questionId && questionId.length < 3)) redirect("/admin/kids?error=short");
   const { data: last } = await supabase.from("kids_questions").select("position").order("position", { ascending: false }).limit(1).maybeSingle();
-  await supabase.from("kids_questions").insert({ question, position: (last?.position ?? 0) + 1 });
+  await supabase.from("kids_questions").insert({ question, question_id: questionId || null, position: (last?.position ?? 0) + 1 });
   updateTag(CONTENT_TAGS.kids);
   redirect("/admin/kids?added=1#add");
 }

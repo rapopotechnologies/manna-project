@@ -1,3 +1,7 @@
+"use client";
+
+import { useLang } from "@/i18n/client";
+
 // A glass jar holding this week's manna: one piece per morning gathered (up to 7).
 
 const SPOTS = [
@@ -11,9 +15,10 @@ const SPOTS = [
 ];
 
 export function MannaJar({ pieces, dropLast = false, size = 140 }: { pieces: number; dropLast?: boolean; size?: number }) {
+  const lang = useLang();
   const n = Math.max(0, Math.min(7, pieces));
   return (
-    <svg className="jar" viewBox="0 0 140 170" width={size} height={(size * 170) / 140} role="img" aria-label={`Manna jar with ${n} of 7 pieces this week`}>
+    <svg className="jar" viewBox="0 0 140 170" width={size} height={(size * 170) / 140} role="img" aria-label={lang === "id" ? `Toples manna berisi ${n} dari 7 butir minggu ini` : `Manna jar with ${n} of 7 pieces this week`}>
       <rect x="36" y="6" width="68" height="16" rx="5" fill="var(--gold)" stroke="var(--ink)" strokeWidth="2" />
       <path
         d="M44 22 L44 30 Q28 34 27 48 L24 140 Q24 162 46 162 L94 162 Q116 162 116 140 L113 48 Q112 34 96 30 L96 22"

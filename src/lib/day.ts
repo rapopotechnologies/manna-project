@@ -27,10 +27,10 @@ export function shiftDayKey(dayKey: string, offset: number): string {
   return new Date(n * 86_400_000).toISOString().slice(0, 10);
 }
 
-/** "Tuesday, October 27" */
-export function formatDayLabel(dayKey: string): string {
+/** "Tuesday, October 27", or "Selasa, 27 Oktober" in Indonesian. */
+export function formatDayLabel(dayKey: string, lang: "en" | "id" = "en"): string {
   const [y, m, d] = dayKey.split("-").map(Number);
-  return new Intl.DateTimeFormat("en-US", {
+  return new Intl.DateTimeFormat(lang === "id" ? "id-ID" : "en-US", {
     timeZone: "UTC",
     weekday: "long",
     month: "long",

@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { dayKeyFor } from "@/lib/day";
+import { langOf, localPath, stripLang } from "@/i18n/lang";
+import { readerLocalDay } from "@/lib/use-reader-day";
 import { mannaForDay, type MannaPiece } from "@/lib/hidden-manna";
 import { gatherHiddenManna, useProgress } from "@/lib/progress";
 
@@ -12,7 +13,10 @@ import { gatherHiddenManna, useProgress } from "@/lib/progress";
  * "To the one who conquers I will give some of the hidden manna." Revelation 2:17
  */
 export function HiddenManna() {
-  const pathname = usePathname();
+  const fullPath = usePathname();
+  const lang = langOf(fullPath);
+  // Pieces are placed by page, the same in both languages.
+  const pathname = stripLang(fullPath);
   const progress = useProgress();
   const [dayKey, setDayKey] = useState<string | null>(null);
   const [floating, setFloating] = useState<number | null>(null);
@@ -20,7 +24,7 @@ export function HiddenManna() {
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- the reader's day is only known in the browser
-    setDayKey(dayKeyFor(new Date()));
+    setDayKey(readerLocalDay());
   }, []);
 
   useEffect(() => {
@@ -51,8 +55,8 @@ export function HiddenManna() {
           className={`hidden-manna side-${piece.side}${floating === piece.id ? " is-gathered" : ""}`}
           style={{ top: `${piece.top}%` }}
           onClick={() => gather(piece)}
-          aria-label="A piece of hidden manna. Tap to gather it."
-          title="Hidden manna"
+          aria-label={lang === "id" ? "Sebutir manna tersembunyi. Ketuk untuk mengumpulkannya." : "A piece of hidden manna. Tap to gather it."}
+          title={lang === "id" ? "Manna tersembunyi" : "Hidden manna"}
         >
           <span aria-hidden="true" />
         </button>
@@ -61,11 +65,21 @@ export function HiddenManna() {
         <div className="manna-note" role="status">
           <span className="manna-note-flake" aria-hidden="true" />
           <span>
-            <b>Hidden manna gathered</b>
-            {note.count} of {note.total} today
-            {note.count === note.total ? ". You found them all!" : ""}
+            {lang === "id" ? (
+              <>
+                <b>Manna tersembunyi terkumpul</b>
+                {note.count} dari {note.total} hari ini
+                {note.count === note.total ? ". Kamu menemukan semuanya!" : ""}
+              </>
+            ) : (
+              <>
+                <b>Hidden manna gathered</b>
+                {note.count} of {note.total} today
+                {note.count === note.total ? ". You found them all!" : ""}
+              </>
+            )}
           </span>
-          <Link href="/my-manna">Your jar →</Link>
+          <Link href={localPath(lang, "/my-manna")}>{lang === "id" ? "Toplesmu →" : "Your jar →"}</Link>
         </div>
       )}
     </>

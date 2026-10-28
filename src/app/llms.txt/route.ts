@@ -19,17 +19,17 @@ export async function GET() {
 > ${MOTTO}. Manna Project makes modern, purposeful Bible journaling tools (a digital Bible reading tracker, printable planners, printable Book of the Bible bookmarks, digital journaling stickers and vinyl stickers) and offers free daily faith rhythms: a Bible verse every day and a daily conversation question for kids. Products are sold through Shopee (for Indonesia, where most readers are) and Etsy (worldwide). Part of what Manna Project does supports children’s education in some of the poorest communities in Indonesia and equips Christians, schools and churches there with its products.
 
 Key facts:
-- Website: ${SITE_URL}
+- Website: ${SITE_URL} (English) and ${SITE_URL}/id (Bahasa Indonesia; same pages under /id, e.g. /id/daily). Visitors on Indonesian devices see the Indonesian site first. On the Indonesian site the daily verse stays in English (NIV) with the reference in Indonesian and a link to the passage in the Terjemahan Baru (TB) on Bible.com; the kids’ questions are translated.
 - Shop: most products are digital downloads or printables; vinyl stickers are physical and shipped. Buyers in Indonesia purchase on Shopee (${SHOPEE_SHOP_URL}); everyone else on Etsy (${ETSY_SHOP_URL}). The website is a showroom; checkout happens on Shopee or Etsy.
 - Free, no account needed: today’s verse, the Manna Kids question, a short S.O.A.P. reflection (Scripture, Observation, Application, Prayer).
-- The daily verse is the NIV, provided by OurManna.com, and changes at midnight Pacific time.
+- The daily verse is the NIV, provided by OurManna.com. Each reader gets a new verse at their own midnight (in Asia, when OurManna publishes, about 7am in Jakarta). The kids’ question changes at each reader’s own midnight.
 - Optional free accounts sync a reader’s progress (a “manna jar” of days read, a 66-book shelf, a reflection garden) across devices. New accounts are approved by the team.
 - Manna Project is not a registered nonprofit; support gifts are not tax-deductible.
 - Contact: ${CONTACT_EMAIL} (general), ${SUPPORT_EMAIL} (orders and accounts).
 
 ## Daily
 
-- [Today’s verse](${SITE_URL}/daily): one Bible verse each day (NIV), with sharing to Instagram stories and a guided S.O.A.P. reflection.
+- [Today’s verse](${SITE_URL}/daily): one Bible verse each day (NIV), with sharing to Instagram stories and WhatsApp and a guided S.O.A.P. reflection.
 - [Manna Kids question](${SITE_URL}/kids): one question a day for families to talk about at dinner, with read-aloud and a drawing pad. The same question for every family that day.
 - [Daily verse RSS feed](${SITE_URL}/feed.xml)
 

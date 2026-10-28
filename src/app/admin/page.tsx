@@ -71,7 +71,7 @@ async function Overview() {
             Verse {scans("daily") + scans("")} · Kids {scans("kids")} · Hidden {rows.filter((r) => r.metric === "qr_scan" && r.key.startsWith("found:")).reduce((n, r) => n + r.count, 0)}
           </span>
         </div>
-        <div className="stat"><b>{total("ig_share") + total("link_share")}</b><span>Shares</span></div>
+        <div className="stat"><b>{total("ig_share") + total("link_share") + total("wa_share")}</b><span>Shares</span></div>
         <div className="stat">
           <b>{total("etsy_click") + total("shopee_click")}</b>
           <span>Clicks to the shops</span>

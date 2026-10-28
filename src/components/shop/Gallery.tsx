@@ -2,11 +2,13 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import { useLang } from "@/i18n/client";
 
 type Props = { images: { src: string; alt: string }[]; name: string };
 
 /** Swipeable product photos with thumbnails. Uses native scroll snapping. */
 export function Gallery({ images, name }: Props) {
+  const id = useLang() === "id";
   const track = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
 
@@ -45,14 +47,14 @@ export function Gallery({ images, name }: Props) {
         tabIndex={0}
         role="region"
         aria-roledescription="carousel"
-        aria-label={`${name} photos`}
+        aria-label={id ? `Foto ${name}` : `${name} photos`}
         onKeyDown={(e) => {
           if (e.key === "ArrowRight") { e.preventDefault(); go(active + 1); }
           if (e.key === "ArrowLeft") { e.preventDefault(); go(active - 1); }
         }}
       >
         {images.map((img, i) => (
-          <div className="gallery-slide" key={img.src} data-index={i} aria-roledescription="slide" aria-label={`${i + 1} of ${images.length}`}>
+          <div className="gallery-slide" key={img.src} data-index={i} aria-roledescription="slide" aria-label={id ? `${i + 1} dari ${images.length}` : `${i + 1} of ${images.length}`}>
             <Image
               src={img.src}
               alt={img.alt}
@@ -68,9 +70,9 @@ export function Gallery({ images, name }: Props) {
       {images.length > 1 && (
         <>
           <div className="gallery-arrows">
-            <button type="button" className="gallery-arrow" onClick={() => go(active - 1)} aria-label="Previous photo">←</button>
+            <button type="button" className="gallery-arrow" onClick={() => go(active - 1)} aria-label={id ? "Foto sebelumnya" : "Previous photo"}>←</button>
             <span className="gallery-count" aria-live="polite">{active + 1} / {images.length}</span>
-            <button type="button" className="gallery-arrow" onClick={() => go(active + 1)} aria-label="Next photo">→</button>
+            <button type="button" className="gallery-arrow" onClick={() => go(active + 1)} aria-label={id ? "Foto berikutnya" : "Next photo"}>→</button>
           </div>
           <div className="gallery-thumbs">
             {images.map((img, i) => (
@@ -78,7 +80,7 @@ export function Gallery({ images, name }: Props) {
                 type="button"
                 key={img.src}
                 className="gallery-thumb"
-                aria-label={`Show photo ${i + 1}`}
+                aria-label={id ? `Tampilkan foto ${i + 1}` : `Show photo ${i + 1}`}
                 aria-current={i === active ? "true" : undefined}
                 onClick={() => go(i)}
               >

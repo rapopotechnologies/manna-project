@@ -2,16 +2,64 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { buildDrawingCard } from "@/lib/drawing-card";
+import { useLang } from "@/i18n/client";
 import { track } from "@/lib/track";
 
 const colors = [
-  { name: "Ink", value: "#1C1B17" },
-  { name: "Gold", value: "#E1AD37" },
-  { name: "Sage", value: "#6FA597" },
-  { name: "Olive", value: "#7E7A3F" },
-  { name: "Coral", value: "#E0785E" },
-  { name: "Sky", value: "#5B8FC9" },
+  { name: "Ink", nameId: "Hitam", value: "#1C1B17" },
+  { name: "Gold", nameId: "Emas", value: "#E1AD37" },
+  { name: "Sage", nameId: "Hijau sage", value: "#6FA597" },
+  { name: "Olive", nameId: "Hijau zaitun", value: "#7E7A3F" },
+  { name: "Coral", nameId: "Koral", value: "#E0785E" },
+  { name: "Sky", nameId: "Biru langit", value: "#5B8FC9" },
 ];
+
+const T = {
+  en: {
+    cleared: "Page cleared",
+    saved: "Drawing saved to your device",
+    drawFirst: "Draw something first, then share it.",
+    shareTitle: "Our Manna Kids drawing",
+    noShare: "Couldn’t open sharing. Use Save drawing instead.",
+    storySaved: "Story image saved. Open Instagram on your phone and add it to your story.",
+    label: "Draw it",
+    title: "Draw your answer",
+    note: "Your drawing stays on this device unless you share it.",
+    tools: "Drawing tools",
+    color: "Color",
+    thin: "Thin brush",
+    thick: "Thick brush",
+    eraser: "Eraser",
+    clear: "Clear",
+    save: "Save drawing",
+    share: "Share to Instagram",
+    story: "Instagram story image",
+    canvas: "Drawing area. Draw with your finger, a pen or a mouse.",
+    url: "BYMANNAPROJECT.COM/KIDS",
+  },
+  id: {
+    cleared: "Halaman dibersihkan",
+    saved: "Gambar tersimpan di perangkatmu",
+    drawFirst: "Gambar sesuatu dulu, lalu bagikan.",
+    shareTitle: "Gambar Manna Kids kami",
+    noShare: "Tidak bisa membuka menu berbagi. Pakai Simpan gambar saja.",
+    storySaved: "Gambar story tersimpan. Buka Instagram di ponselmu dan tambahkan ke story-mu.",
+    label: "Gambarkan",
+    title: "Gambarkan jawabanmu",
+    note: "Gambarmu tetap di perangkat ini kecuali kamu membagikannya.",
+    tools: "Alat menggambar",
+    color: "Warna",
+    thin: "Kuas tipis",
+    thick: "Kuas tebal",
+    eraser: "Penghapus",
+    clear: "Bersihkan",
+    save: "Simpan gambar",
+    share: "Bagikan ke Instagram",
+    story: "Gambar Instagram Story",
+    canvas: "Area menggambar. Gambar dengan jari, pena, atau mouse.",
+    url: "BYMANNAPROJECT.COM/ID/KIDS",
+  },
+};
 
 const PAPER = "#FFFCF3";
 const WIDTH = 1200;
@@ -22,6 +70,8 @@ type Props = { dayKey: string; question: string; dateLabel: string };
 
 /** A drawing pad for today's question. Drawings save on this device only. */
 export function DoodlePad({ dayKey, question, dateLabel }: Props) {
+  const lang = useLang();
+  const t = T[lang];
   const canvas = useRef<HTMLCanvasElement>(null);
   const drawing = useRef(false);
   const hasInk = useRef(false);
@@ -48,10 +98,10 @@ export function DoodlePad({ dayKey, question, dateLabel }: Props) {
     clearTimeout(cardTimer.current);
     cardTimer.current = setTimeout(async () => {
       if (!canvas.current || !hasInk.current) return;
-      const blob = await buildDrawingCard(canvas.current, question, dateLabel);
+      const blob = await buildDrawingCard(canvas.current, question, dateLabel, t.url);
       card.current = blob ? new File([blob], `manna-kids-${dayKey}-drawing.png`, { type: "image/png" }) : null;
     }, 350);
-  }, [dayKey, question, dateLabel]);
+  }, [dayKey, question, dateLabel, t.url]);
 
   useEffect(() => {
     const probe = new File([new Blob()], "probe.png", { type: "image/png" });
@@ -135,7 +185,7 @@ export function DoodlePad({ dayKey, question, dateLabel }: Props) {
     try {
       localStorage.removeItem(storageKey(dayKey));
     } catch {}
-    setStatus("Page cleared");
+    setStatus(t.cleared);
     setTimeout(() => setStatus(""), 2000);
   }
 
@@ -148,29 +198,29 @@ export function DoodlePad({ dayKey, question, dateLabel }: Props) {
       a.download = `manna-kids-drawing-${dayKey}.png`;
       a.click();
       setTimeout(() => URL.revokeObjectURL(url), 1000);
-      setStatus("Drawing saved to your device");
+      setStatus(t.saved);
       setTimeout(() => setStatus(""), 3000);
     }, "image/png");
   }
 
   async function shareCard() {
     if (!hasInk.current) {
-      setStatus("Draw something first, then share it.");
+      setStatus(t.drawFirst);
       setTimeout(() => setStatus(""), 3000);
       return;
     }
     // Phones: open the share sheet with the ready-made card (Instagram appears there).
     if (canShareFiles && card.current) {
       try {
-        await navigator.share({ files: [card.current], title: "Our Manna Kids drawing" });
+        await navigator.share({ files: [card.current], title: t.shareTitle });
         track("ig_share", "kids-drawing");
       } catch (err) {
-        if ((err as DOMException)?.name !== "AbortError") setStatus("Couldn’t open sharing. Use Save drawing instead.");
+        if ((err as DOMException)?.name !== "AbortError") setStatus(t.noShare);
       }
       return;
     }
     // Computers: download the story card to post from a phone.
-    const blob = card.current ?? (canvas.current ? await buildDrawingCard(canvas.current, question, dateLabel) : null);
+    const blob = card.current ?? (canvas.current ? await buildDrawingCard(canvas.current, question, dateLabel, t.url) : null);
     if (!blob) return;
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -179,7 +229,7 @@ export function DoodlePad({ dayKey, question, dateLabel }: Props) {
     a.click();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
     track("ig_share", "kids-drawing");
-    setStatus("Story image saved. Open Instagram on your phone and add it to your story.");
+    setStatus(t.storySaved);
     setTimeout(() => setStatus(""), 4000);
   }
 
@@ -187,21 +237,21 @@ export function DoodlePad({ dayKey, question, dateLabel }: Props) {
     <section className="doodle" aria-labelledby="doodle-title">
       <div className="doodle-head">
         <div>
-          <span className="label">Draw it</span>
-          <h2 id="doodle-title">Draw your answer</h2>
+          <span className="label">{t.label}</span>
+          <h2 id="doodle-title">{t.title}</h2>
         </div>
-        <p className="doodle-note">Your drawing stays on this device unless you share it.</p>
+        <p className="doodle-note">{t.note}</p>
       </div>
 
-      <div className="doodle-tools" role="toolbar" aria-label="Drawing tools">
-        <div className="swatches-row" role="radiogroup" aria-label="Color">
+      <div className="doodle-tools" role="toolbar" aria-label={t.tools}>
+        <div className="swatches-row" role="radiogroup" aria-label={t.color}>
           {colors.map((c) => (
             <button
               key={c.value}
               type="button"
               role="radio"
               aria-checked={!eraser && color === c.value}
-              aria-label={c.name}
+              aria-label={lang === "id" ? c.nameId : c.name}
               className="swatch"
               style={{ background: c.value }}
               onClick={() => {
@@ -213,20 +263,20 @@ export function DoodlePad({ dayKey, question, dateLabel }: Props) {
         </div>
         <div className="doodle-buttons">
           <button type="button" className="btn btn-small" aria-pressed={thick} onClick={() => setThick((t) => !t)}>
-            {thick ? "Thin brush" : "Thick brush"}
+            {thick ? t.thin : t.thick}
           </button>
           <button type="button" className="btn btn-small" aria-pressed={eraser} onClick={() => setEraser((v) => !v)}>
-            Eraser
+            {t.eraser}
           </button>
-          <button type="button" className="btn btn-small" onClick={clear}>Clear</button>
-          <button type="button" className="btn btn-small" onClick={download}>Save drawing</button>
+          <button type="button" className="btn btn-small" onClick={clear}>{t.clear}</button>
+          <button type="button" className="btn btn-small" onClick={download}>{t.save}</button>
           <button type="button" className="btn btn-small btn-instagram" onClick={shareCard}>
             <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2">
               <rect x="3" y="3" width="18" height="18" rx="5" />
               <circle cx="12" cy="12" r="4.2" />
               <circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none" />
             </svg>
-            {canShareFiles ? "Share to Instagram" : "Instagram story image"}
+            {canShareFiles ? t.share : t.story}
           </button>
         </div>
       </div>
@@ -236,7 +286,7 @@ export function DoodlePad({ dayKey, question, dateLabel }: Props) {
         className={`doodle-canvas${eraser ? " is-erasing" : ""}`}
         width={WIDTH}
         height={HEIGHT}
-        aria-label="Drawing area. Draw with your finger, a pen or a mouse."
+        aria-label={t.canvas}
         onPointerDown={down}
         onPointerMove={move}
         onPointerUp={up}

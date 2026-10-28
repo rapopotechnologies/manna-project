@@ -2,6 +2,8 @@ import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { ImageResponse } from "next/og";
 import type { DailyVerse } from "@/lib/verse";
+import { referenceId } from "@/data/bible-id";
+import type { Lang } from "@/i18n/lang";
 import { formatDayLabel } from "@/lib/day";
 
 export const LINEN = "#F8F3E6";
@@ -163,21 +165,28 @@ export async function renderCard(card: CardContent, layout: CardLayout, headers?
 }
 
 /** Today's verse as a card. */
-export function renderVerseCard(verse: DailyVerse, layout: CardLayout, headers?: Record<string, string>) {
+export function renderVerseCard(verse: DailyVerse, layout: CardLayout, headers?: Record<string, string>, lang: Lang = "en") {
+  const id = lang === "id";
   return renderCard(
     {
-      kicker: formatDayLabel(verse.dayKey),
+      kicker: formatDayLabel(verse.dayKey, lang),
       body: verse.text,
       quote: true,
-      caption: `${verse.reference} · ${verse.version}`,
-      url: "bymannaproject.com/daily",
+      caption: `${id ? referenceId(verse.reference) : verse.reference} · ${verse.version}`,
+      url: id ? "bymannaproject.com/id/daily" : "bymannaproject.com/daily",
     },
     layout,
     headers,
   );
 }
 
-/** Reads ?format=story|post from a card request. */
+/** Reads ?format=story|post|landscape from a card request. */
 export function layoutFromRequest(url: URL): CardLayout {
-  return url.searchParams.get("format") === "story" ? "story" : "post";
+  const f = url.searchParams.get("format");
+  return f === "story" || f === "landscape" ? f : "post";
+}
+
+/** Reads ?lang=id from a card request. */
+export function langFromRequest(url: URL): Lang {
+  return url.searchParams.get("lang") === "id" ? "id" : "en";
 }

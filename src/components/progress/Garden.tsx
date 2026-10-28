@@ -1,3 +1,6 @@
+"use client";
+
+import { useLang } from "@/i18n/client";
 import { dayNumber } from "@/lib/day";
 
 const PETALS = ["#E1AD37", "#94BDB5", "#E0A0A0", "#C9B6E4", "#E0785E", "#F2D27A"];
@@ -5,13 +8,14 @@ const PER_ROW = 8;
 
 /** One flower for every finished reflection, newest at the end. */
 export function Garden({ days }: { days: string[] }) {
+  const lang = useLang();
   const recent = days.slice(-40);
   const rows = Math.max(1, Math.ceil((recent.length + 1) / PER_ROW));
   const width = 420;
   const rowH = 96;
 
   return (
-    <svg className="garden" viewBox={`0 0 ${width} ${rows * rowH}`} role="img" aria-label={`Reflection garden with ${days.length} flowers`}>
+    <svg className="garden" viewBox={`0 0 ${width} ${rows * rowH}`} role="img" aria-label={lang === "id" ? `Kebun renungan dengan ${days.length} bunga` : `Reflection garden with ${days.length} flowers`}>
       {Array.from({ length: rows }, (_, r) => (
         <path
           key={`g${r}`}

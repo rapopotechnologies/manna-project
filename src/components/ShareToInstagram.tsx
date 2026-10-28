@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useLang } from "@/i18n/client";
 import { track } from "@/lib/track";
 
 type Props = {
@@ -22,6 +23,7 @@ type Mode = "share" | "download";
  * On computers and older phones it downloads the image instead.
  */
 export function ShareToInstagram({ storyUrl, filename, title, trackKey, onStatus }: Props) {
+  const id = useLang() === "id";
   const file = useRef<File | null>(null);
   const [mode, setMode] = useState<Mode>("download");
 
@@ -57,7 +59,7 @@ export function ShareToInstagram({ storyUrl, filename, title, trackKey, onStatus
       track("ig_share", trackKey);
     } catch (err) {
       if ((err as DOMException)?.name !== "AbortError") {
-        onStatus("Couldn’t open sharing. Use Save image, then post it from Instagram.");
+        onStatus(id ? "Tidak bisa membuka menu berbagi. Simpan gambarnya, lalu unggah dari Instagram." : "Couldn’t open sharing. Use Save image, then post it from Instagram.");
       }
     }
   }
@@ -66,7 +68,7 @@ export function ShareToInstagram({ storyUrl, filename, title, trackKey, onStatus
     return (
       <button type="button" className="btn btn-instagram" onClick={share}>
         <InstagramGlyph />
-        Share to Instagram
+        {id ? "Bagikan ke Instagram" : "Share to Instagram"}
       </button>
     );
   }
@@ -78,11 +80,11 @@ export function ShareToInstagram({ storyUrl, filename, title, trackKey, onStatus
       download={filename}
       onClick={() => {
         track("ig_share", trackKey);
-        onStatus("Story image saved. Open Instagram on your phone and add it to your story.");
+        onStatus(id ? "Gambar story tersimpan. Buka Instagram di ponselmu dan tambahkan ke story-mu." : "Story image saved. Open Instagram on your phone and add it to your story.");
       }}
     >
       <InstagramGlyph />
-      Instagram story image
+      {id ? "Gambar Instagram Story" : "Instagram story image"}
     </a>
   );
 }

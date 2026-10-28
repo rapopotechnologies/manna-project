@@ -2,10 +2,16 @@
 
 import { useState } from "react";
 import { ShareToInstagram } from "@/components/ShareToInstagram";
+import { ShareToWhatsApp } from "@/components/ShareToWhatsApp";
+import { useLang } from "@/i18n/client";
+import { localPath } from "@/i18n/lang";
+import { SITE_URL } from "@/lib/site";
 
 type Props = { slug: string; text: string; reference: string; translation: string };
 
 export function FoundActions({ slug, text, reference, translation }: Props) {
+  const lang = useLang();
+  const id = lang === "id";
   const [status, setStatus] = useState("");
 
   function flash(message: string) {
@@ -16,9 +22,9 @@ export function FoundActions({ slug, text, reference, translation }: Props) {
   async function copy() {
     try {
       await navigator.clipboard.writeText(`“${text}” — ${reference} (${translation})`);
-      flash("Verse copied");
+      flash(id ? "Ayat tersalin" : "Verse copied");
     } catch {
-      flash("Select the verse above to copy it");
+      flash(id ? "Pilih teks ayat di atas untuk menyalinnya" : "Select the verse above to copy it");
     }
   }
 
@@ -26,13 +32,17 @@ export function FoundActions({ slug, text, reference, translation }: Props) {
     <div className="found-actions">
       <div className="verse-buttons">
         <ShareToInstagram
-          storyUrl={`/found/${slug}/card?format=story`}
+          storyUrl={`/found/${slug}/card?format=story${id ? "&lang=id" : ""}`}
           filename={`manna-${slug}-story.png`}
-          title={`A verse I found: ${reference}`}
+          title={id ? `Ayat yang kutemukan: ${reference}` : `A verse I found: ${reference}`}
           trackKey={slug}
           onStatus={flash}
         />
-        <button type="button" className="btn" onClick={copy}>Copy</button>
+        <ShareToWhatsApp
+          text={`${id ? "Ayat yang kutemukan" : "A verse I found"}: “${text}” — ${reference} (${translation})\n\n${SITE_URL}${localPath(lang, `/found/${slug}`)}`}
+          trackKey={slug}
+        />
+        <button type="button" className="btn" onClick={copy}>{id ? "Salin" : "Copy"}</button>
       </div>
       <p className="toast" role="status" aria-live="polite">{status}</p>
     </div>

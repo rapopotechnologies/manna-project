@@ -2,25 +2,28 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { langOf, localPath, stripLang } from "@/i18n/lang";
 
 const links = [
-  { href: "/daily", label: "Today’s verse" },
-  { href: "/shop", label: "Shop" },
-  { href: "/kids", label: "Manna Kids" },
-  { href: "/about", label: "About" },
+  { href: "/daily", en: "Today’s verse", id: "Ayat hari ini" },
+  { href: "/shop", en: "Shop", id: "Toko" },
+  { href: "/kids", en: "Manna Kids", id: "Manna Kids" },
+  { href: "/about", en: "About", id: "Tentang" },
 ];
 
 export function NavLinks() {
   const pathname = usePathname();
+  const lang = langOf(pathname);
+  const path = stripLang(pathname);
   return (
     <ul className="nav-links">
-      {links.map(({ href, label }) => {
-        const active = pathname === href || pathname.startsWith(`${href}/`);
+      {links.map(({ href, en, id }) => {
+        const active = path === href || path.startsWith(`${href}/`);
         return (
           <li key={href}>
-            <Link href={href} aria-current={active ? "page" : undefined} className="nav-link">
+            <Link href={localPath(lang, href)} aria-current={active ? "page" : undefined} className="nav-link">
               <span className="nav-sun" aria-hidden="true" />
-              {label}
+              {lang === "id" ? id : en}
             </Link>
           </li>
         );

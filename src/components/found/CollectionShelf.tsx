@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useLang } from "@/i18n/client";
+import { localPath } from "@/i18n/lang";
 import { readFound } from "@/lib/found-store";
 
 type Item = { slug: string; reference: string };
@@ -9,6 +11,8 @@ type Props = { name: string; blurb: string; items: Item[] };
 
 /** One collection: found verses as notes, the rest as empty slots. */
 export function CollectionShelf({ name, blurb, items }: Props) {
+  const lang = useLang();
+  const id = lang === "id";
   const [found, setFound] = useState<string[] | null>(null);
 
   useEffect(() => {
@@ -25,7 +29,7 @@ export function CollectionShelf({ name, blurb, items }: Props) {
           <h2 id={`col-${name}`}>{name}</h2>
           <p className="section-note">{blurb}</p>
         </div>
-        <span className="chip">{found ? `${count} of ${items.length} found` : `${items.length} verses`}</span>
+        <span className="chip">{found ? (id ? `${count} dari ${items.length} ditemukan` : `${count} of ${items.length} found`) : id ? `${items.length} ayat` : `${items.length} verses`}</span>
       </div>
 
       <ul className="slots">
@@ -34,13 +38,13 @@ export function CollectionShelf({ name, blurb, items }: Props) {
           return (
             <li key={item.slug} className={`slot${isFound ? " is-found" : ""}`} style={{ rotate: `${((i * 37) % 5) - 2}deg` }}>
               {isFound ? (
-                <Link href={`/found/${item.slug}`}>
+                <Link href={localPath(lang, `/found/${item.slug}`)}>
                   <span className="slot-mark" aria-hidden="true" />
                   {item.reference}
                 </Link>
               ) : (
                 <span className="slot-hidden">
-                  <span className="sr-only">Not found yet</span>
+                  <span className="sr-only">{id ? "Belum ditemukan" : "Not found yet"}</span>
                   <span aria-hidden="true">?</span>
                 </span>
               )}
@@ -50,7 +54,11 @@ export function CollectionShelf({ name, blurb, items }: Props) {
       </ul>
 
       {found && count === 0 && (
-        <p className="collection-empty hand">None found yet. They’re tucked away around Manna Project, so keep an eye out.</p>
+        <p className="collection-empty hand">
+          {id
+            ? "Belum ada yang ditemukan. Ayat-ayat ini tersembunyi di sekitar Manna Project, jadi perhatikan baik-baik."
+            : "None found yet. They’re tucked away around Manna Project, so keep an eye out."}
+        </p>
       )}
     </section>
   );

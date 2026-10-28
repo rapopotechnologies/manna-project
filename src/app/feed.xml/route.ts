@@ -9,8 +9,8 @@ const esc = (s: string) =>
 export async function GET() {
   const verse = await getTodaysManna();
   const [y, m, d] = verse.dayKey.split("-").map(Number);
-  // 8am Pacific (15:00 UTC) on the verse's day.
-  const pubDate = new Date(Date.UTC(y, m - 1, d, 15)).toUTCString();
+  // OurManna publishes at about midnight UTC.
+  const pubDate = new Date(Date.UTC(y, m - 1, d, 0, 5)).toUTCString();
   const link = `${SITE_URL}/daily`;
   const title = `${verse.reference} (${verse.version}): ${formatDayLabel(verse.dayKey)}`;
   const credit = verse.source === "ourmanna" ? " Daily verse powered by OurManna.com." : "";

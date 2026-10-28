@@ -52,7 +52,8 @@ export type Database = {
         { user_id: string; progress: Json; reflections: Json; found: string[]; updated_at: string },
         "user_id"
       >;
-      kids_questions: Table<{ id: number; position: number; question: string; updated_at: string }, "position" | "question">;
+      daily_verses: Table<{ day: string; text: string; reference: string; version: string; fetched_at: string }, "day" | "text" | "reference">;
+      kids_questions: Table<{ id: number; position: number; question: string; question_id: string | null; updated_at: string }, "position" | "question">;
       products: Table<
         {
           slug: string;

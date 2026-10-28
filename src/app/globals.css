@@ -856,6 +856,8 @@ a:hover { color: var(--gold-text); }
 /* Shared share button outside the verse window */
 .btn-instagram { background: var(--gold); border-color: var(--gold); color: #1c1b17; }
 .btn-instagram:hover { background: var(--ink); border-color: var(--ink); color: var(--linen); }
+.btn-wa { background: #25d366; border-color: #25d366; color: #0b2e17; }
+.btn-wa:hover { background: var(--ink); border-color: var(--ink); color: var(--linen); }
 .btn-sage { background: var(--sage); border-color: var(--sage); color: #1c1b17; }
 .btn-sage:hover { background: var(--ink); border-color: var(--ink); color: var(--linen); }
 .btn-sage[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--linen); }
@@ -1180,3 +1182,30 @@ a:hover { color: var(--gold-text); }
 .manna-dots i { width: 26px; height: 17px; border-radius: 50%; border: 1.5px dashed var(--line-strong); rotate: -12deg; }
 .manna-dots i.on { border: 1.2px solid color-mix(in srgb, var(--ink) 55%, transparent); background: #f6ebc8; box-shadow: 0 0 12px color-mix(in srgb, var(--gold) 55%, transparent); }
 .hidden-verse { font-size: 1.25rem; }
+
+/* EN | ID switch */
+.lang-switch { display: flex; align-items: center; gap: 2px; padding: 3px; border: 1.5px solid var(--line-strong); border-radius: 999px; flex-shrink: 0; }
+.lang-switch a {
+  display: inline-grid;
+  place-items: center;
+  min-width: 32px;
+  min-height: 30px;
+  padding: 0 6px;
+  border-radius: 999px;
+  font-family: var(--f-label);
+  font-weight: 700;
+  font-size: 0.66rem;
+  letter-spacing: 0.1em;
+  color: var(--ink-soft);
+  text-decoration: none;
+}
+.lang-switch a:hover { color: var(--ink); }
+.lang-switch a[aria-current="true"] { background: var(--ink); color: var(--linen); }
+@media (max-width: 640px) {
+  .lang-switch { position: absolute; top: calc(var(--s-2) + 2px); left: max(20px, env(safe-area-inset-left, 0px)); padding: 2px; }
+  .lang-switch a { min-width: 28px; min-height: 28px; font-size: 0.6rem; }
+}
+
+/* Indonesian pages: where to read the verse in the Terjemahan Baru */
+.verse-tb { position: relative; margin: var(--s-3) 0 var(--s-5); max-width: 60ch; font-size: var(--t-sm); line-height: 1.5; color: var(--sky-ink, var(--ink-soft)); }
+.verse-tb a { color: inherit; font-weight: 600; }

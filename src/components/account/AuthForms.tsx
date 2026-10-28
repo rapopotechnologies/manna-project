@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { useLang } from "@/i18n/client";
+import { localPath } from "@/i18n/lang";
 import { createClient } from "@/lib/supabase/browser";
 
 type Mode = "sign-in" | "sign-up" | "forgot";
@@ -9,8 +11,60 @@ const GOOGLE_ON = process.env.NEXT_PUBLIC_GOOGLE_SIGNIN === "on";
 
 const callback = (next: string) => `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`;
 
+const T = {
+  en: {
+    confirmFirst: "Please confirm your email first. Open the link we sent you.",
+    noMatch: "That email and password don’t match. You can reset your password below.",
+    tooShort: (n: number) => `Use at least ${n} characters for your password.`,
+    tooMany: "Too many tries. Wait a few minutes and try again.",
+    almost: (email: string) => `Almost there. We sent a confirmation link to ${email}. Open it on this device to finish creating your account.`,
+    resetSent: (email: string) => `If ${email} has an account, a link to choose a new password is on its way.`,
+    resent: "We sent the confirmation link again.",
+    titles: { "sign-in": "Sign in", "sign-up": "Create your free account", forgot: "Reset your password" } as Record<Mode, string>,
+    tabs: "Account",
+    signIn: "Sign in",
+    create: "Create account",
+    google: "Continue with Google",
+    or: "or with email",
+    email: "Email",
+    password: "Password",
+    min: (n: number) => `At least ${n} characters.`,
+    wait: "One moment…",
+    sendReset: "Email me a reset link",
+    sendAgain: "Send it again",
+    back: "Back to sign in",
+    forgot: "Forgot your password?",
+  },
+  id: {
+    confirmFirst: "Konfirmasi emailmu dulu. Buka tautan yang kami kirim.",
+    noMatch: "Email dan kata sandi tidak cocok. Kamu bisa mengatur ulang kata sandi di bawah.",
+    tooShort: (n: number) => `Gunakan minimal ${n} karakter untuk kata sandimu.`,
+    tooMany: "Terlalu banyak percobaan. Tunggu beberapa menit lalu coba lagi.",
+    almost: (email: string) => `Sedikit lagi. Kami mengirim tautan konfirmasi ke ${email}. Buka di perangkat ini untuk menyelesaikan pembuatan akun.`,
+    resetSent: (email: string) => `Jika ${email} punya akun, tautan untuk membuat kata sandi baru sedang dikirim.`,
+    resent: "Tautan konfirmasi sudah kami kirim lagi.",
+    titles: { "sign-in": "Masuk", "sign-up": "Buat akun gratis", forgot: "Atur ulang kata sandi" } as Record<Mode, string>,
+    tabs: "Akun",
+    signIn: "Masuk",
+    create: "Buat akun",
+    google: "Lanjutkan dengan Google",
+    or: "atau dengan email",
+    email: "Email",
+    password: "Kata sandi",
+    min: (n: number) => `Minimal ${n} karakter.`,
+    wait: "Sebentar…",
+    sendReset: "Kirim tautan atur ulang",
+    sendAgain: "Kirim lagi",
+    back: "Kembali ke halaman masuk",
+    forgot: "Lupa kata sandi?",
+  },
+};
+
 /** Sign in, create an account, or reset a forgotten password. */
 export function AuthForms({ onSignedIn }: { onSignedIn: () => void }) {
+  const lang = useLang();
+  const t = T[lang];
+  const L = (path: string) => localPath(lang, path);
   const [mode, setMode] = useState<Mode>("sign-in");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -30,9 +84,7 @@ export function AuthForms({ onSignedIn }: { onSignedIn: () => void }) {
           const unconfirmed = /confirm/i.test(error.message);
           setMessage({
             kind: "error",
-            text: unconfirmed
-              ? "Please confirm your email first. Open the link we sent you."
-              : "That email and password don’t match. You can reset your password below.",
+            text: unconfirmed ? t.confirmFirst : t.noMatch,
             resend: unconfirmed,
           });
         } else {
@@ -40,30 +92,28 @@ export function AuthForms({ onSignedIn }: { onSignedIn: () => void }) {
         }
       } else if (mode === "sign-up") {
         if (password.length < MIN) {
-          setMessage({ kind: "error", text: `Use at least ${MIN} characters for your password.` });
+          setMessage({ kind: "error", text: t.tooShort(MIN) });
           return;
         }
         const { data, error } = await supabase.auth.signUp({
           email: cleanEmail,
           password,
-          options: { emailRedirectTo: callback("/account?welcome=1") },
+          options: { emailRedirectTo: callback(`${L("/account")}?welcome=1`) },
         });
         if (error) {
-          setMessage({ kind: "error", text: error.status === 429 ? "Too many tries. Wait a few minutes and try again." : error.message });
+          setMessage({ kind: "error", text: error.status === 429 ? t.tooMany : error.message });
         } else if (data.session) {
           onSignedIn();
         } else {
           setMessage({
             kind: "ok",
-            text: `Almost there. We sent a confirmation link to ${cleanEmail}. Open it on this device to finish creating your account.`,
+            text: t.almost(cleanEmail),
           });
         }
       } else {
-        const { error } = await supabase.auth.resetPasswordForEmail(cleanEmail, { redirectTo: callback("/account/reset") });
+        const { error } = await supabase.auth.resetPasswordForEmail(cleanEmail, { redirectTo: callback(L("/account/reset")) });
         setMessage(
-          error && error.status === 429
-            ? { kind: "error", text: "Too many tries. Wait a few minutes and try again." }
-            : { kind: "ok", text: `If ${cleanEmail} has an account, a link to choose a new password is on its way.` },
+          error && error.status === 429 ? { kind: "error", text: t.tooMany } : { kind: "ok", text: t.resetSent(cleanEmail) },
         );
       }
     } finally {
@@ -73,23 +123,23 @@ export function AuthForms({ onSignedIn }: { onSignedIn: () => void }) {
 
   async function resend() {
     setBusy(true);
-    await createClient().auth.resend({ type: "signup", email: email.trim().toLowerCase(), options: { emailRedirectTo: callback("/account?welcome=1") } });
+    await createClient().auth.resend({ type: "signup", email: email.trim().toLowerCase(), options: { emailRedirectTo: callback(`${L("/account")}?welcome=1`) } });
     setBusy(false);
-    setMessage({ kind: "ok", text: "We sent the confirmation link again." });
+    setMessage({ kind: "ok", text: t.resent });
   }
 
   async function google() {
-    await createClient().auth.signInWithOAuth({ provider: "google", options: { redirectTo: callback("/account") } });
+    await createClient().auth.signInWithOAuth({ provider: "google", options: { redirectTo: callback(L("/account")) } });
   }
 
-  const titles: Record<Mode, string> = { "sign-in": "Sign in", "sign-up": "Create your free account", forgot: "Reset your password" };
+  const titles = t.titles;
 
   return (
     <div className="auth-card">
       {mode !== "forgot" && (
-        <div className="auth-tabs" role="tablist" aria-label="Account">
-          <button type="button" role="tab" aria-selected={mode === "sign-in"} onClick={() => { setMode("sign-in"); setMessage(null); }}>Sign in</button>
-          <button type="button" role="tab" aria-selected={mode === "sign-up"} onClick={() => { setMode("sign-up"); setMessage(null); }}>Create account</button>
+        <div className="auth-tabs" role="tablist" aria-label={t.tabs}>
+          <button type="button" role="tab" aria-selected={mode === "sign-in"} onClick={() => { setMode("sign-in"); setMessage(null); }}>{t.signIn}</button>
+          <button type="button" role="tab" aria-selected={mode === "sign-up"} onClick={() => { setMode("sign-up"); setMessage(null); }}>{t.create}</button>
         </div>
       )}
       <h2>{titles[mode]}</h2>
@@ -97,20 +147,20 @@ export function AuthForms({ onSignedIn }: { onSignedIn: () => void }) {
       {GOOGLE_ON && mode !== "forgot" && (
         <>
           <button type="button" className="btn btn-google" onClick={google}>
-            <GoogleGlyph /> Continue with Google
+            <GoogleGlyph /> {t.google}
           </button>
-          <p className="auth-or"><span>or with email</span></p>
+          <p className="auth-or"><span>{t.or}</span></p>
         </>
       )}
 
       <form onSubmit={submit} className="auth-form">
         <label className="auth-field" htmlFor="account-email">
-          <span>Email</span>
+          <span>{t.email}</span>
           <input id="account-email" type="email" autoComplete="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
         </label>
         {mode !== "forgot" && (
           <label className="auth-field" htmlFor="account-password">
-            <span>Password</span>
+            <span>{t.password}</span>
             <input
               id="account-password"
               type="password"
@@ -120,26 +170,26 @@ export function AuthForms({ onSignedIn }: { onSignedIn: () => void }) {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-            {mode === "sign-up" && <small>At least {MIN} characters.</small>}
+            {mode === "sign-up" && <small>{t.min(MIN)}</small>}
           </label>
         )}
         <button type="submit" className="btn btn-primary" disabled={busy}>
-          {busy ? "One moment…" : mode === "sign-in" ? "Sign in" : mode === "sign-up" ? "Create account" : "Email me a reset link"}
+          {busy ? t.wait : mode === "sign-in" ? t.signIn : mode === "sign-up" ? t.create : t.sendReset}
         </button>
       </form>
 
       {message && (
         <p className={`auth-message ${message.kind}`} role={message.kind === "error" ? "alert" : "status"}>
           {message.text}{" "}
-          {message.resend && <button type="button" className="link-button" onClick={resend} disabled={busy}>Send it again</button>}
+          {message.resend && <button type="button" className="link-button" onClick={resend} disabled={busy}>{t.sendAgain}</button>}
         </p>
       )}
 
       <p className="auth-switch">
         {mode === "forgot" ? (
-          <button type="button" className="link-button" onClick={() => { setMode("sign-in"); setMessage(null); }}>Back to sign in</button>
+          <button type="button" className="link-button" onClick={() => { setMode("sign-in"); setMessage(null); }}>{t.back}</button>
         ) : (
-          <button type="button" className="link-button" onClick={() => { setMode("forgot"); setMessage(null); }}>Forgot your password?</button>
+          <button type="button" className="link-button" onClick={() => { setMode("forgot"); setMessage(null); }}>{t.forgot}</button>
         )}
       </p>
     </div>

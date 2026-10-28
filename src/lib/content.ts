@@ -7,6 +7,7 @@ import {
   type HiddenVerse,
 } from "@/data/hidden-verses";
 import { kidsQuestions as fallbackQuestions } from "@/data/kids-questions";
+import { kidsQuestionsId as fallbackQuestionsId } from "@/data/kids-questions-id";
 import { hasSupabase } from "@/lib/supabase/env";
 import { createPublicClient } from "@/lib/supabase/public";
 
@@ -118,17 +119,21 @@ export async function getCollectionFor(slug: string): Promise<Collection | undef
   return (await getHiddenContent()).collections.find((c) => c.slugs.includes(slug));
 }
 
-/** The kids' questions in order. */
-export async function getKidsQuestions(): Promise<string[]> {
+export type KidsQuestion = { en: string; id: string };
+
+const fallbackKids = (): KidsQuestion[] => fallbackQuestions.map((en, i) => ({ en, id: fallbackQuestionsId[i] ?? en }));
+
+/** The kids' questions in order, in English and Indonesian (English if there's no translation yet). */
+export async function getKidsQuestions(): Promise<KidsQuestion[]> {
   "use cache";
   cacheLife("hours");
   cacheTag(CONTENT_TAGS.kids);
-  if (!hasSupabase) return [...fallbackQuestions];
+  if (!hasSupabase) return fallbackKids();
   try {
-    const { data, error } = await createPublicClient().from("kids_questions").select("question").order("position");
-    if (error || !data?.length) return [...fallbackQuestions];
-    return data.map((r) => r.question);
+    const { data, error } = await createPublicClient().from("kids_questions").select("question, question_id").order("position");
+    if (error || !data?.length) return fallbackKids();
+    return data.map((r) => ({ en: r.question, id: r.question_id?.trim() || r.question }));
   } catch {
-    return [...fallbackQuestions];
+    return fallbackKids();
   }
 }

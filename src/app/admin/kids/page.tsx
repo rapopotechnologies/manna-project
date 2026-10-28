@@ -28,7 +28,7 @@ async function KidsAdmin({ searchParams }: { searchParams: PageProps<"/admin/kid
     <AdminShell
       admin={admin}
       title="Kids questions"
-      intro={`${questions.length} questions. Every family sees the same one each day, going down this list in order and starting over at the end.`}
+      intro={`${questions.length} questions. Every family sees the same one each day, going down this list in order and starting over at the end. The Indonesian site shows the Indonesian wording (or the English one if it’s left empty).`}
     >
       {typeof error === "string" && errors[error] && <p className="notice notice-error" role="alert">{errors[error]}</p>}
       {saved && <p className="notice notice-ok" role="status">Saved.</p>}
@@ -41,7 +41,10 @@ async function KidsAdmin({ searchParams }: { searchParams: PageProps<"/admin/kid
             <b>{q.position}</b>
             <form action={updateQuestion} style={{ display: "contents" }}>
               <input type="hidden" name="id" value={q.id} />
-              <input name="question" defaultValue={q.question} aria-label={`Question ${q.position}${i === todayIndex ? " (today)" : ""}`} />
+              <span className="question-pair">
+                <input name="question" defaultValue={q.question} aria-label={`Question ${q.position}${i === todayIndex ? " (today)" : ""}, English`} />
+                <input name="question_id" defaultValue={q.question_id ?? ""} lang="id" placeholder="Bahasa Indonesia" aria-label={`Question ${q.position}, Indonesian`} />
+              </span>
               <button className="icon-btn" type="submit">Save</button>
             </form>
             <form action={deleteQuestion}>
@@ -57,8 +60,12 @@ async function KidsAdmin({ searchParams }: { searchParams: PageProps<"/admin/kid
         <h2 id="add-q">Add a question</h2>
         <form action={addQuestion} className="admin-form">
           <label className="field" htmlFor="new-question">
-            <span>Question</span>
+            <span>Question (English)</span>
             <input id="new-question" name="question" required minLength={3} maxLength={300} placeholder="What made you smile today?" />
+          </label>
+          <label className="field" htmlFor="new-question-id">
+            <span>Question (Indonesian, optional)</span>
+            <input id="new-question-id" name="question_id" lang="id" minLength={3} maxLength={300} placeholder="Apa yang membuatmu tersenyum hari ini?" />
           </label>
           <div><button className="btn btn-primary" type="submit">Add question</button></div>
         </form>

@@ -17,11 +17,14 @@ export async function GET(request: NextRequest) {
     const supabase = await createClient();
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
-      to.pathname = next;
+      // `next` can carry its own query (e.g. /account?welcome=1), so parse it rather than setting the pathname.
+      const dest = new URL(next, request.nextUrl.origin);
+      to.pathname = dest.pathname;
+      to.search = dest.search;
       return NextResponse.redirect(to);
     }
   }
-  to.pathname = "/account";
+  to.pathname = next === "/id" || next.startsWith("/id/") ? "/id/account" : "/account";
   to.searchParams.set("error", "link");
   return NextResponse.redirect(to);
 }
